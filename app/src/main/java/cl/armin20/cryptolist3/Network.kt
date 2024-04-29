@@ -18,8 +18,6 @@ class NetworkPing {
                 connection.connect()
                 code = connection.responseCode
                 result = code == 200
-
-
             } catch (e: Exception) {
                 result = false
             }

@@ -70,6 +70,8 @@ dependencies {
     ksp(libs.dagger.compiler)
     // Navigation
     implementation(libs.androidx.navigation.compose)
+    // DataStore
+    implementation(libs.androidx.datastore.preferences)
 
     // Room
     implementation(libs.androidx.room.runtime)
