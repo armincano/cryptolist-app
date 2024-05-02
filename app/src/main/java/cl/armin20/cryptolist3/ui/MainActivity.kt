@@ -52,6 +52,6 @@ private fun CryptoListApp() {
             arguments = listOf(navArgument("id") {
                 type = NavType.StringType
             })
-        ) { CryptoDetailsScreen() }
+        ) { CryptoDetailsScreen{ navController.navigate("cryptocoins")}}
     }
 }

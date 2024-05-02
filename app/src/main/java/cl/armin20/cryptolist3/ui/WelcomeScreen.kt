@@ -19,6 +19,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.armin20.cryptolist3.CryptoList2Application
@@ -53,24 +57,48 @@ fun WelcomeScreen(onItemClick: () -> Unit) {
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        Button(
-            enabled = textState.value.isNotEmpty(),
-            onClick = {
-                Log.d("userPrefTextstatValue", textState.value)
-                welcomeViewModel.saveUserName(
-                    textState.value, CryptoList2Application.getAppContext()
+        Row (
+            horizontalArrangement = Arrangement.End,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 60.dp)
+        ){
+
+            Button(
+                enabled = textState.value.isNotEmpty(),
+                onClick = {
+                    Log.d("userPrefTextstatValue", textState.value)
+                    welcomeViewModel.saveUserName(
+                        textState.value, CryptoList2Application.getAppContext()
+                    )
+                    onItemClick()
+                },
+                modifier = Modifier.size(90.dp, 60.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.save),
+                    contentDescription = "Save",
+                    tint = Color.White,
+                    modifier = Modifier.fillMaxSize()
                 )
-                onItemClick()
-            },
-            modifier = Modifier.size(90.dp, 60.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.save),
-                contentDescription = "Save",
-                tint = Color.White,
-                modifier = Modifier.fillMaxSize()
-            )
+            }
+
+            Spacer(modifier = Modifier.width(30.dp))
+
+            Button(
+                onClick = {
+                    onItemClick()
+                },
+                modifier = Modifier.size(90.dp, 60.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.home),
+                    contentDescription = "Home",
+                    tint = Color.White,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
         }
+
 
     }
 }

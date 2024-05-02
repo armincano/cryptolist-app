@@ -1,6 +1,5 @@
 package cl.armin20.cryptolist3.ui
 
-
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
@@ -48,7 +47,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-
 // @Preview(showSystemUi = true, device = Devices.NEXUS_6)
 // To achieve a sticky header with LazyColumn, you can use the experimental StickyHeader component.
 // Must use the ExperimentalFoundationApi annotation to use the StickyHeader component.
@@ -61,11 +59,12 @@ fun CryptoScreen(onItemClick: (id: String) -> Unit) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(10.dp)
                 .weight(1f)
                 .background(
                     brush = Brush.radialGradient(
                         colors = listOf(
-                            bgRadialGradient1,
+                            bgRadialGradient2,
                             MaterialTheme.colorScheme.surface
                         )
                     )
@@ -86,7 +85,7 @@ fun CryptoScreen(onItemClick: (id: String) -> Unit) {
             }
 
         }
-        Bottom(cryptoViewModel)
+        BottomCryptoScreen(cryptoViewModel)
     }
 
 }
@@ -100,7 +99,7 @@ fun StickyHeader(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> 
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.surface)
-            .padding(horizontal = 30.dp, vertical = 12.dp)
+            .padding(bottom = 15.dp, top = 10.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -165,7 +164,7 @@ fun CryptoListItem(item: Data, onItemClick: (id: String) -> Unit) {
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimaryContainer),
         modifier = Modifier
-            .padding(vertical = 5.dp, horizontal = 30.dp)
+            .padding(vertical = 5.dp, horizontal = 15.dp)
             .fillMaxWidth()
             .clickable { onItemClick("cryptocoins/${item.id}") }
     ) {
@@ -222,7 +221,7 @@ fun CryptoListItem(item: Data, onItemClick: (id: String) -> Unit) {
 }
 
 @Composable
-fun Bottom(cryptoViewModel: CryptoViewModel) {
+fun BottomCryptoScreen(cryptoViewModel: CryptoViewModel) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Top,
@@ -239,7 +238,8 @@ fun Bottom(cryptoViewModel: CryptoViewModel) {
 
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier.size(50.dp)
+            modifier = Modifier
+                .size(50.dp)
                 .clip(RoundedCornerShape(50))
                 .background(MaterialTheme.colorScheme.onPrimaryContainer)
                 .clickable { GlobalScope.launch(Dispatchers.IO) { cryptoViewModel.getCoins() } },
@@ -251,6 +251,7 @@ fun Bottom(cryptoViewModel: CryptoViewModel) {
                     .size(30.dp)
             )
         }
+
     }
 
 }

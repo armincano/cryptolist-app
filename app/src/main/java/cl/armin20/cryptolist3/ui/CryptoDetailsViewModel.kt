@@ -2,7 +2,6 @@ package cl.armin20.cryptolist3.ui
 
 import android.app.Application
 import android.content.ContentValues
-import android.nfc.Tag
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -29,14 +28,14 @@ class CryptoDetailsViewModel(stateHandle: SavedStateHandle) : ViewModel() {
     val cryptoDetail = mutableStateOf(
         CoinDetailItem(
             "0",
-            Data("offline", "OFFLINE", "Connect to the internet", 0f, 0f, 0f, "offline"),
+            Data("offline", "...", "Connect to the internet", 0f, 0f, 0f, "offline"),
             0
         )
     )
 
-    fun getDateTime(s: Long): String {
+    fun getVersionDate(s: Long): String {
         return try {
-            val sdf = SimpleDateFormat("dd MMMM, HH:mm:ss")//"dd MMMM yyyy, HH:mm:ss"
+            val sdf = SimpleDateFormat("MMMM dd, HH:mm:ss")//"dd MMMM yyyy, HH:mm:ss"
             val date = Date(s)
             sdf.format(date)
         } catch (e: Exception) {
@@ -44,14 +43,15 @@ class CryptoDetailsViewModel(stateHandle: SavedStateHandle) : ViewModel() {
         }
     }
 
+    var id = "0"
 
     init {
         Log.i(ContentValues.TAG, "Error in getDetailCoin: ")
-        val id = stateHandle.get<String>("id") ?: ""
+        id = stateHandle.get<String>("id") ?: ""
         getDetailCoin(id)
     }
 
-    private fun getDetailCoin(id: String) {
+    fun getDetailCoin(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val fromRepositorySingle = cryptoListRepository.getSingle(id)

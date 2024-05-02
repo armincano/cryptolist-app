@@ -1,227 +1,326 @@
 package cl.armin20.cryptolist3.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.armin20.cryptolist3.R
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import cl.armin20.cryptolist3.ui.theme.bgRadialGradient1
+import cl.armin20.cryptolist3.ui.theme.bgRadialGradient2
 import cl.armin20.cryptolist3.ui.theme.decreaseColor
 import cl.armin20.cryptolist3.ui.theme.increaseColor
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 @Composable
-fun CryptoDetailsScreen() {
-    Box(
+fun CryptoDetailsScreen(onItemClick: () -> Unit) {
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface)
-    ) {
-//
-        Image(
-            painter = painterResource(R.drawable.bg_details),
-            contentDescription = null,
-            modifier = Modifier
-                .align(Alignment.TopCenter),
-            contentScale = ContentScale.FillWidth,
-        )
+            .background(
+                brush = Brush.radialGradient(
+                    colors = listOf(
+                        bgRadialGradient2,
+                        bgRadialGradient1
+                    ),
+                )
+            )
+    )
+    {
 
-        Column {
-            SymbolSection()
+        val cryptoDetailsViewModel: CryptoDetailsViewModel = viewModel()
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(30.dp)
+        ) {
+            CardHero(cryptoDetailsViewModel)
             Spacer(modifier = Modifier.height(25.dp))
-            CardSection()
+            PriceSection(cryptoDetailsViewModel)
             Spacer(modifier = Modifier.height(35.dp))
-            OthersValuesSection()
+            OthersValuesSection(cryptoDetailsViewModel)
         }
+        Bottom(cryptoDetailsViewModel, onItemClick)
 
     }
 }
 
+//@Preview(showSystemUi = true, device = Devices.NEXUS_6)
 @Composable
-fun SymbolSection() {
-    val cryptoDetailsViewModel: CryptoDetailsViewModel = viewModel()
-    Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically,
+fun CardHero(cryptoDetailsViewModel: CryptoDetailsViewModel) {
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 25.dp)
+            .size(280.dp)
+            .border(
+                BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimaryContainer),
+                shape = RoundedCornerShape(30.dp)
+            )
+            .clip(RoundedCornerShape(30.dp))
+            .background(
+                Brush.linearGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primaryContainer,
+                        MaterialTheme.colorScheme.primary,
+                        MaterialTheme.colorScheme.secondary
+                    ),
+                    start = Offset.Zero,
+                    end = Offset(0.0f, 700f),
+                )
+            )
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(start = 5.dp)
+            modifier = Modifier.padding(25.dp)
         ) {
-            Text(
-//                text = "btc",
-                text = cryptoDetailsViewModel.cryptoDetail.value.data.symbol.lowercase(),
-                style = MaterialTheme.typography.displaySmall,
-                overflow = TextOverflow.Ellipsis
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data("https://static.coincap.io/assets/icons/${cryptoDetailsViewModel.cryptoDetail.value.data.symbol.lowercase()}@2x.png")
+                    .crossfade(true)
+                    .build(),
+                contentDescription = "crypto icon",
+                modifier = Modifier
+                    .size(125.dp)
+                    .padding(top = 7.dp),
+//                            error = painterResource(R.drawable.ic_baseline_broken_image),
+                contentScale = ContentScale.Fit
             )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
             Text(
-//                text = "bitcoin",
+//                text = "Bitcoin",
                 text = cryptoDetailsViewModel.cryptoDetail.value.data.name,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.displaySmall.copy(
+                    shadow = Shadow(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        blurRadius = 40f,
+                    )
+                ),
                 overflow = TextOverflow.Ellipsis,
-            )
-        }
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data("https://static.coincap.io/assets/icons/${cryptoDetailsViewModel.cryptoDetail.value.data.symbol.lowercase()}@2x.png")
-//                .data("https://static.coincap.io/assets/icons/bitcoin@2x.png")
-                .crossfade(true)
-                .build(),
-            contentDescription = null,
-            modifier = Modifier
-                .size(85.dp)
-                .padding(top = 7.dp),
-//                    .clip(RoundedCornerShape(10.dp)),
-//                    .background(Color.White),
-//                    .clip(CircleCropTransformation())
-//            error = painterResource(R.drawable.ic_baseline_broken_image),
-            contentScale = ContentScale.Fit
-        )
-    }
-}
-
-@Composable
-fun CardSection() {
-    val cryptoDetailsViewModel: CryptoDetailsViewModel = viewModel()
-//    val textex1 = "bitcoin"
-//    val textex2 = 123.20219
-    ElevatedCard(
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 40.dp)
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = "${cryptoDetailsViewModel.cryptoDetail.value.data.priceUsd}",
-//            text = textex2.toString(),
-                style = MaterialTheme.typography.headlineLarge,
-                overflow = TextOverflow.Clip,
                 maxLines = 1
             )
-
             Text(
-                text = "US Dollar",
-                style = MaterialTheme.typography.titleLarge
-            )
-
-            Text(
-                text = "${cryptoDetailsViewModel.getDateTime(cryptoDetailsViewModel.cryptoDetail.value.timestamp)} hrs.",
-//                text = "12:23:23 hrs.",
-                style = MaterialTheme.typography.bodyLarge
+//                text = "btc",
+                text = cryptoDetailsViewModel.cryptoDetail.value.data.symbol,
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    shadow = Shadow(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        blurRadius = 20f,
+                    )
+                ),
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
             )
         }
 
     }
 }
 
+//@Preview(showSystemUi = true, device = Devices.NEXUS_6)
 @Composable
-fun OthersValuesSection() {
-    val cryptoDetailsViewModel: CryptoDetailsViewModel = viewModel()
+fun PriceSection(cryptoDetailsViewModel: CryptoDetailsViewModel) {
+//    val textex1 = "bitcoin"
+//    val textex2 = 123.20219
+    Row(
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.Bottom,
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Text(
+                text = "${cryptoDetailsViewModel.cryptoDetail.value.data.priceUsd}",
+//            text = textex2.toString(),
+            style = MaterialTheme.typography.displaySmall,
+            overflow = TextOverflow.Clip,
+            maxLines = 1
+        )
+
+        Spacer(modifier = Modifier.width(10.dp))
+
+        Text(
+            text = "USD",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier
+                .padding(bottom = 3.dp),
+        )
+    }
+
+}
+
+//@Preview(showSystemUi = true, device = Devices.NEXUS_6)
+@Composable
+fun OthersValuesSection(cryptoDetailsViewModel: CryptoDetailsViewModel) {
 //    val textex1 = "bitcoin"
 //    val textex2 = 123.20219
     Column(
-        modifier = Modifier
-            .padding(horizontal = 40.dp)
     ) {
-        Card(
-            modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
-                .fillMaxWidth()
-        ) {
-            Row(modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer).padding(start = 10.dp, top = 15.dp, bottom = 10.dp)) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.weight(1f)) {
+
                 Text(
-                    modifier = Modifier
-                        .weight(1f),
-                    text = "Supply",
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Text(
-                    modifier = Modifier
-                        .weight(2f),
-                    text = cryptoDetailsViewModel.cryptoDetail.value.data.supply.toString(),
-//                text = textex2.toString(),
+                    text = "${cryptoDetailsViewModel.cryptoDetail.value.data.supply}",
+//                    text = textex2.toString(),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.headlineSmall
+                )
+
+                Text(
+                    text = "Supply",
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
-            Row(modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer).padding(bottom = 20.dp, start = 10.dp)) {
+
+            Spacer(modifier = Modifier.width(10.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    modifier = Modifier
-                        .weight(1f),
-                    text = "Market cap",
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Text(
-                    modifier = Modifier
-                        .weight(2f),
-                    text = cryptoDetailsViewModel.cryptoDetail.value.data.marketCapUsd.toString(),
-//                text = textex2.toString(),
+                    text = "${cryptoDetailsViewModel.cryptoDetail.value.data.marketCapUsd}",
+//                    text = textex2.toString(),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.headlineSmall
+                )
+
+                Text(
+                    text = "Market cap",
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        Column(
-            verticalArrangement = Arrangement.SpaceEvenly,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(10.dp))
-                .background(
-                    if (cryptoDetailsViewModel.cryptoDetail.value.data.changePercent24Hr.contains("-")) {
-                        decreaseColor
-                    } else {
-                        increaseColor
-                    }
-                ),
-        ) {
-            Text(
-                text = cryptoDetailsViewModel.cryptoDetail.value.data.changePercent24Hr,
-//            text = textex2.toString(),
-                style = MaterialTheme.typography.titleLarge,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1
-            )
-            Spacer(modifier = Modifier.height(5.dp))
-            Text(
-                text = "value change in the last 24 hrs.",
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
-            )
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = cryptoDetailsViewModel.cryptoDetail.value.data.changePercent24Hr,
+//                    text = textex2.toString(),
+                    style = MaterialTheme.typography.headlineSmall,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
+                )
+                Text(
+                    text = "value change in the last 24 hrs.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+
+            Spacer(modifier = Modifier.width(10.dp))
+
+            Column(
+                modifier = Modifier.weight(1f),
+            ) {
+                if (cryptoDetailsViewModel.cryptoDetail.value.data.changePercent24Hr.contains("-")) {
+                    Image(
+                        painter = painterResource(id = R.drawable.decrease),
+                        contentDescription = "Decrease value icon",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(60.dp)
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(id = R.drawable.increase),
+                        contentDescription = "Increase value icon",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(60.dp)
+                    )
+                }
+
+            }
         }
     }
+}
+
+@Composable
+fun Bottom(cryptoDetailsViewModel: CryptoDetailsViewModel, onItemClick: () -> Unit) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Top,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp, 15.dp)
+    ) {
+
+        Text(
+            text = "Updated on ${cryptoDetailsViewModel.getVersionDate(cryptoDetailsViewModel.cryptoDetail.value.timestamp)} 🔄",
+            style = MaterialTheme.typography.labelSmall,
+            modifier = Modifier.padding(horizontal = 10.dp).weight(1f),
+        )
+
+        Row(horizontalArrangement = Arrangement.SpaceAround){
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(MaterialTheme.colorScheme.onPrimaryContainer)
+                    .clickable { onItemClick() }
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.home),
+                    contentDescription = "Home",
+                    modifier = Modifier
+                        .size(30.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(30.dp))
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(MaterialTheme.colorScheme.onPrimaryContainer)
+                    .clickable {
+                        GlobalScope.launch(Dispatchers.IO) {
+                            cryptoDetailsViewModel.getDetailCoin(
+                                cryptoDetailsViewModel.id
+                            )
+                        }
+                    },
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.update),
+                    contentDescription = "Update",
+                    modifier = Modifier
+                        .size(30.dp)
+                )
+            }
+        }
+
+    }
+
 }
 
 
