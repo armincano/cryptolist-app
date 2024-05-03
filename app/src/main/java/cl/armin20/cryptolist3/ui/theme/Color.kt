@@ -1,10 +1,13 @@
 package cl.armin20.cryptolist3.ui.theme
 import androidx.compose.ui.graphics.Color
 
-val increaseColor = Color(0xFFB1D18A)
-val decreaseColor = Color(0xFFFFB4AB)
-val bgRadialGradient1 = Color(0xFF0F0E1B)
-val bgRadialGradient2 = Color(0xFF1E1E1E)
+val surfaceBgGradientExt = Color(0xFF10101D)
+val surfaceBgGradientInt = Color(0xFF151331)
+val cardBgGradientExt = Color(0xFF1C1A35)
+val cardBgGradientInt = Color(0xFF272733)
+val cardBgLinear1 = Color(0xFF4C54B3)
+val cardBgLinear2 = Color(0xFF69BADF)
+val cardBgLinear3 = Color(0xFFF1D4CF)
 
 val primaryLight = Color(0xFF03677E)
 val onPrimaryLight = Color(0xFFFFFFFF)

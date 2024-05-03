@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -28,7 +28,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.armin20.cryptolist3.CryptoList2Application
 import cl.armin20.cryptolist3.R
 import cl.armin20.cryptolist3.model.Data
-import cl.armin20.cryptolist3.ui.theme.bgRadialGradient2
+import cl.armin20.cryptolist3.ui.theme.cardBgGradientExt
+import cl.armin20.cryptolist3.ui.utils.surfaceBgRadialGradient
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.Dispatchers
@@ -43,52 +44,51 @@ import kotlinx.coroutines.launch
 fun CryptoScreen(onItemClick: (id: String) -> Unit) {
     //Instanciar el ViewModel de forma correcta, sin entregar parámetros
     val cryptoViewModel: CryptoViewModel = viewModel()
-    Column {
-        LazyColumn(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .surfaceBgRadialGradient()
+            .padding(20.dp)
+    ) {
+
+        Header(cryptoViewModel, onItemClick = { id -> onItemClick(id) })
+        Spacer(modifier = Modifier.height(10.dp))
+        Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(10.dp)
                 .weight(1f)
-                .background(
-                    brush = Brush.radialGradient(
-                        colors = listOf(
-                            bgRadialGradient2,
-                            MaterialTheme.colorScheme.surface
-                        )
-                    )
+                .border(
+                    1.dp,
+                    MaterialTheme.colorScheme.onPrimaryContainer,
+                    RoundedCornerShape(18.dp)
                 )
+                .clip(RoundedCornerShape(18.dp))
         ) {
-            stickyHeader {
-                StickyHeader(cryptoViewModel, onItemClick = { id -> onItemClick(id) })
-            }
-
-            items(
-                if (cryptoViewModel.searchTextField.value.isEmpty()) {
-                    cryptoViewModel.cryptoList.value.data
-                } else cryptoViewModel.cryptoList.value.data.filter {
-                    it.id.contains(cryptoViewModel.searchTextField.value)
-                }
+            LazyColumn(
             ) {
-                CryptoListItem(it, onItemClick = { id -> onItemClick(id) })
+                items(
+                    if (cryptoViewModel.searchTextField.value.isEmpty()) {
+                        cryptoViewModel.cryptoList.value.data
+                    } else cryptoViewModel.cryptoList.value.data.filter {
+                        it.id.contains(cryptoViewModel.searchTextField.value)
+                    }
+                ) {
+                    CryptoListItem(it, onItemClick = { id -> onItemClick(id) })
+                }
             }
-
         }
+        Spacer(modifier = Modifier.height(10.dp))
         BottomCryptoScreen(cryptoViewModel)
     }
-
 }
+
 
 // @Preview(showSystemUi = true, device = Devices.NEXUS_6)
 @Composable
-fun StickyHeader(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> Unit) {
+fun Header(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> Unit) {
     val welcomeViewModel: WelcomeViewModel = viewModel()
     welcomeViewModel.getFirstUserName("user_name", CryptoList2Application.getAppContext())
 
-    Column(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(bottom = 15.dp, top = 10.dp)
-    ) {
+    Column {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = CenterVertically,
@@ -148,13 +148,19 @@ fun StickyHeader(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> 
 // @Preview(showSystemUi = true, device = Devices.NEXUS_6)
 @Composable
 fun CryptoListItem(item: Data, onItemClick: (id: String) -> Unit) {
+
     OutlinedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 9.dp, start = 16.dp, end = 16.dp)
+            .clickable { onItemClick("cryptocoins/${item.id}") },
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimaryContainer),
-        modifier = Modifier
-            .padding(vertical = 5.dp, horizontal = 15.dp)
-            .fillMaxWidth()
-            .clickable { onItemClick("cryptocoins/${item.id}") }
+        colors = CardDefaults.cardColors(
+            containerColor = cardBgGradientExt,
+//            disabledContainerColor = Color.DarkGray,
+//            contentColor = Color.Black
+        ),
     ) {
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -215,7 +221,6 @@ fun BottomCryptoScreen(cryptoViewModel: CryptoViewModel) {
         verticalAlignment = Alignment.Top,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp, 15.dp)
     ) {
 
         Text(

@@ -7,7 +7,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,16 +21,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import cl.armin20.cryptolist3.R
-import cl.armin20.cryptolist3.ui.theme.bgRadialGradient1
-import cl.armin20.cryptolist3.ui.theme.bgRadialGradient2
-import cl.armin20.cryptolist3.ui.theme.decreaseColor
-import cl.armin20.cryptolist3.ui.theme.increaseColor
+import cl.armin20.cryptolist3.ui.utils.cardBgLinearGradient
+import cl.armin20.cryptolist3.ui.utils.surfaceBgRadialGradient
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.Dispatchers
@@ -43,14 +38,8 @@ fun CryptoDetailsScreen(navController: NavController, onItemClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.radialGradient(
-                    colors = listOf(
-                        bgRadialGradient2,
-                        bgRadialGradient1
-                    ),
-                )
-            )
+            .surfaceBgRadialGradient()
+            .padding(20.dp)
     )
     {
 
@@ -59,7 +48,7 @@ fun CryptoDetailsScreen(navController: NavController, onItemClick: () -> Unit) {
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(30.dp)
+                .padding(15.dp)
         ) {
             CardHero(cryptoDetailsViewModel)
             Spacer(modifier = Modifier.height(25.dp))
@@ -67,7 +56,7 @@ fun CryptoDetailsScreen(navController: NavController, onItemClick: () -> Unit) {
             Spacer(modifier = Modifier.height(35.dp))
             OthersValuesSection(cryptoDetailsViewModel)
         }
-        Bottom(cryptoDetailsViewModel, onItemClick, navController)
+        BottomDetailsScreen(cryptoDetailsViewModel, onItemClick, navController)
 
     }
 }
@@ -77,22 +66,11 @@ fun CryptoDetailsScreen(navController: NavController, onItemClick: () -> Unit) {
 fun CardHero(cryptoDetailsViewModel: CryptoDetailsViewModel) {
     Box(
         modifier = Modifier
+            .cardBgLinearGradient()
             .size(280.dp)
             .border(
                 BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimaryContainer),
                 shape = RoundedCornerShape(30.dp)
-            )
-            .clip(RoundedCornerShape(30.dp))
-            .background(
-                Brush.linearGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primaryContainer,
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.secondary
-                    ),
-                    start = Offset.Zero,
-                    end = Offset(0.0f, 700f),
-                )
             )
     ) {
         Column(
@@ -155,7 +133,7 @@ fun PriceSection(cryptoDetailsViewModel: CryptoDetailsViewModel) {
             .fillMaxWidth()
     ) {
         Text(
-                text = "${cryptoDetailsViewModel.cryptoDetail.value.data.priceUsd}",
+            text = "${cryptoDetailsViewModel.cryptoDetail.value.data.priceUsd}",
 //            text = textex2.toString(),
             style = MaterialTheme.typography.displaySmall,
             overflow = TextOverflow.Clip,
@@ -263,22 +241,27 @@ fun OthersValuesSection(cryptoDetailsViewModel: CryptoDetailsViewModel) {
 }
 
 @Composable
-fun Bottom(cryptoDetailsViewModel: CryptoDetailsViewModel, onItemClick: () -> Unit, navController: NavController ) {
+fun BottomDetailsScreen(
+    cryptoDetailsViewModel: CryptoDetailsViewModel,
+    onItemClick: () -> Unit,
+    navController: NavController
+) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Top,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp, 15.dp)
     ) {
 
         Text(
             text = "Updated on ${cryptoDetailsViewModel.getVersionDate(cryptoDetailsViewModel.cryptoDetail.value.timestamp)} 🔄",
             style = MaterialTheme.typography.labelSmall,
-            modifier = Modifier.padding(horizontal = 10.dp).weight(1f),
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .weight(1f),
         )
 
-        Row(horizontalArrangement = Arrangement.SpaceAround){
+        Row(horizontalArrangement = Arrangement.SpaceAround) {
 
             Box(
                 contentAlignment = Alignment.Center,
