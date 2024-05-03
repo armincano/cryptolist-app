@@ -28,7 +28,7 @@ class CryptoDetailsViewModel(stateHandle: SavedStateHandle) : ViewModel() {
     val cryptoDetail = mutableStateOf(
         CoinDetailItem(
             "0",
-            Data("offline", "...", "Connect to the internet", 0f, 0f, 0f, "offline"),
+            Data("offline", "...", "Connecting...", 0f, 0f, 0f, "offline"),
             0
         )
     )

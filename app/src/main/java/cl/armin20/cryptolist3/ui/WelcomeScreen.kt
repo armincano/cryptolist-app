@@ -76,7 +76,7 @@ fun WelcomeScreen(onItemClick: () -> Unit) {
                 Icon(
                     painter = painterResource(id = R.drawable.save),
                     contentDescription = "Save",
-                    tint = Color.White,
+                    tint = MaterialTheme.colorScheme.surface,
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -92,7 +92,7 @@ fun WelcomeScreen(onItemClick: () -> Unit) {
                 Icon(
                     painter = painterResource(id = R.drawable.home),
                     contentDescription = "Home",
-                    tint = Color.White,
+                    tint = MaterialTheme.colorScheme.surface,
                     modifier = Modifier.fillMaxSize()
                 )
             }

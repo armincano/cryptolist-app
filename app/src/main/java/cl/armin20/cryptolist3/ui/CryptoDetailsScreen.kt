@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -25,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import cl.armin20.cryptolist3.R
 import cl.armin20.cryptolist3.ui.theme.bgRadialGradient1
 import cl.armin20.cryptolist3.ui.theme.bgRadialGradient2
@@ -37,7 +39,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun CryptoDetailsScreen(onItemClick: () -> Unit) {
+fun CryptoDetailsScreen(navController: NavController, onItemClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -65,7 +67,7 @@ fun CryptoDetailsScreen(onItemClick: () -> Unit) {
             Spacer(modifier = Modifier.height(35.dp))
             OthersValuesSection(cryptoDetailsViewModel)
         }
-        Bottom(cryptoDetailsViewModel, onItemClick)
+        Bottom(cryptoDetailsViewModel, onItemClick, navController)
 
     }
 }
@@ -261,7 +263,7 @@ fun OthersValuesSection(cryptoDetailsViewModel: CryptoDetailsViewModel) {
 }
 
 @Composable
-fun Bottom(cryptoDetailsViewModel: CryptoDetailsViewModel, onItemClick: () -> Unit) {
+fun Bottom(cryptoDetailsViewModel: CryptoDetailsViewModel, onItemClick: () -> Unit, navController: NavController ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Top,
@@ -284,11 +286,12 @@ fun Bottom(cryptoDetailsViewModel: CryptoDetailsViewModel, onItemClick: () -> Un
                     .size(50.dp)
                     .clip(RoundedCornerShape(50))
                     .background(MaterialTheme.colorScheme.onPrimaryContainer)
-                    .clickable { onItemClick() }
+                    .clickable { navController.popBackStack() }
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.home),
                     contentDescription = "Home",
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
                     modifier = Modifier
                         .size(30.dp)
                 )
@@ -313,6 +316,7 @@ fun Bottom(cryptoDetailsViewModel: CryptoDetailsViewModel, onItemClick: () -> Un
                 Image(
                     painter = painterResource(id = R.drawable.update),
                     contentDescription = "Update",
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
                     modifier = Modifier
                         .size(30.dp)
                 )
