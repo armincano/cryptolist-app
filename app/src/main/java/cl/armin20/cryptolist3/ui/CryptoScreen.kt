@@ -1,22 +1,15 @@
 package cl.armin20.cryptolist3.ui
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,22 +18,16 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.armin20.cryptolist3.CryptoList2Application
 import cl.armin20.cryptolist3.R
 import cl.armin20.cryptolist3.model.Data
-import cl.armin20.cryptolist3.ui.theme.bgRadialGradient1
 import cl.armin20.cryptolist3.ui.theme.bgRadialGradient2
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -95,7 +82,7 @@ fun CryptoScreen(onItemClick: (id: String) -> Unit) {
 @Composable
 fun StickyHeader(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> Unit) {
     val welcomeViewModel: WelcomeViewModel = viewModel()
-    welcomeViewModel.getName("user_name", CryptoList2Application.getAppContext())
+    welcomeViewModel.getFirstUserName("user_name", CryptoList2Application.getAppContext())
 
     Column(
         modifier = Modifier
@@ -110,12 +97,12 @@ fun StickyHeader(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> 
         ) {
             Column {
                 Text(
-                    text = "Hey, ${welcomeViewModel.userName}!",
+                    text = "Hey, ${welcomeViewModel.currentUserName}!",
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(horizontal = 10.dp)
                 )
                 Text(
-                    text = "Good morning 😄",
+                    text = "Good crypto hunt 😄",
                     style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier.padding(horizontal = 10.dp)
                 )

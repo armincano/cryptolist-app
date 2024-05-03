@@ -8,7 +8,6 @@ import androidx.room.PrimaryKey
 @Keep
 @Entity(tableName = "coins")
 data class Coins(
-
     // Creo este campo para poder reemplazar el objeto y reemplazarlo. Porque al usar timestamp siempre es un objeto diferent y no lo reemplaza.
     @PrimaryKey
     @ColumnInfo(name = "numberId")
@@ -17,14 +16,12 @@ data class Coins(
     @ColumnInfo(name = "data")
     val data: List<Data>,
 
-
     @ColumnInfo(name = "timestamp")
     val timestamp: Long
 )
 
 @Keep
 data class Data(
-
     @ColumnInfo(name = "id")
     val id: String,
 
@@ -38,11 +35,11 @@ data class Data(
     val priceUsd: Float,
 
     @ColumnInfo(name = "supply")
-    val supply:Float,
+    val supply: Float,
 
     @ColumnInfo(name = "marketCapUsd")
-    val marketCapUsd:Float,
+    val marketCapUsd: Float,
 
     @ColumnInfo(name = "changePercent24Hr")
-    val changePercent24Hr:String
+    val changePercent24Hr: String
 )

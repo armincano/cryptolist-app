@@ -8,7 +8,6 @@ import androidx.room.PrimaryKey
 @Keep
 @Entity(tableName = "coin_detail_item")
 data class CoinDetailItem(
-
     @PrimaryKey
     @ColumnInfo(name = "coinId")
     var coinId: String,

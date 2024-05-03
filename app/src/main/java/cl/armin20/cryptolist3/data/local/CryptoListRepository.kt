@@ -15,7 +15,7 @@ import retrofit2.HttpException
 import java.net.ConnectException
 import java.net.UnknownHostException
 
-class CryptoListRepository(application: Application): CryptoListRepositoryInterface {
+class CryptoListRepository(application: Application) : CryptoListRepositoryInterface {
 
     private var coincapApiService = CoincapRetrofitClient.retrofitInstance()
     private var coinsDao = CoinsDb.getDaoInstance(CryptoList2Application.getAppContext())
@@ -35,12 +35,12 @@ class CryptoListRepository(application: Application): CryptoListRepositoryInterf
                     Log.d("EXCEPTION", "there is an exception: $e")
 //                            Toast.makeText(,"No hay datos",Toast.LENGTH_SHORT).show()
                 }
+
                 else -> throw e
             }
         }
         return coinsDao.getAll()
     }
-
 
 
     override suspend fun getSingle(id: String): CoinDetailItem {
@@ -51,7 +51,7 @@ class CryptoListRepository(application: Application): CryptoListRepositoryInterf
                 coinsDao.addSingle(detailCoins)
                 return coinsDao.getSingle(id)//To always return the coins from Room DB
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             when (e) {
                 is UnknownHostException,
                 is ConnectException,
@@ -59,20 +59,28 @@ class CryptoListRepository(application: Application): CryptoListRepositoryInterf
                     Log.d("EXCEPTION", "there is an exception: $e")
 //                            Toast.makeText(,"No hay datos",Toast.LENGTH_SHORT).show()
                 }
+
                 else -> throw e
             }
         }
-        if (coinsDao.getSingle(id)!=null){return coinsDao.getSingle(id)}else
-        return CoinDetailItem("0", Data("offline","OFFLINE","Connect to the internet",0f,0f,0f,"offline"),0)
+        if (coinsDao.getSingle(id) != null) {
+            return coinsDao.getSingle(id)
+        } else
+            return CoinDetailItem(
+                "0",
+                Data("offline", "OFFLINE", "Connect to the internet", 0f, 0f, 0f, "offline"),
+                0
+            )
     }
 
-    companion object{
+    companion object {
         private var INSTANCE: CryptoListRepository? = null
-        fun get(application: Application) : CryptoListRepository {
-            if (INSTANCE == null){
+        fun get(application: Application): CryptoListRepository {
+            if (INSTANCE == null) {
                 INSTANCE = CryptoListRepository(application)
             }
-            return INSTANCE ?: throw IllegalStateException("Instance of CryptoListRepository is null")
+            return INSTANCE
+                ?: throw IllegalStateException("Instance of CryptoListRepository is null")
         }
     }
 
