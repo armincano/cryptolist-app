@@ -46,7 +46,6 @@ class CryptoDetailsViewModel(stateHandle: SavedStateHandle) : ViewModel() {
     var id = "0"
 
     init {
-        Log.i(ContentValues.TAG, "Error in getDetailCoin: ")
         id = stateHandle.get<String>("id") ?: ""
         getDetailCoin(id)
     }
@@ -54,7 +53,7 @@ class CryptoDetailsViewModel(stateHandle: SavedStateHandle) : ViewModel() {
     fun getDetailCoin(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val fromRepositorySingle = cryptoListRepository.getSingle(id)
+                val fromRepositorySingle = cryptoListRepository.getCoinsSingle(id)
                 withContext(Dispatchers.Main) {//Recuerda que la UI se trabaja en Main
                     cryptoDetail.value = fromRepositorySingle
                 }

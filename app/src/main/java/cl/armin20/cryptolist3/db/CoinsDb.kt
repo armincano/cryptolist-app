@@ -11,10 +11,11 @@ import androidx.room.TypeConverters
 import cl.armin20.cryptolist3.db.Converters
 import cl.armin20.cryptolist3.model.CoinDetailItem
 import cl.armin20.cryptolist3.model.Coins
+import cl.armin20.cryptolist3.model.User
 
 
 @Database(
-    entities = [Coins::class, CoinDetailItem::class],
+    entities = [Coins::class, CoinDetailItem::class, User::class],
     version = 1,
     exportSchema = false
 )

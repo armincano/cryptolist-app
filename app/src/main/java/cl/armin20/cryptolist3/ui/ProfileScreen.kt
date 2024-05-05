@@ -27,9 +27,7 @@ import cl.armin20.cryptolist3.ui.utils.surfaceBgRadialGradient
 
 @Composable
 //@Preview(showSystemUi = true, device = Devices.NEXUS_6)
-fun WelcomeScreen(onItemClick: () -> Unit) {
-
-    val welcomeViewModel: WelcomeViewModel = viewModel()
+fun ProfileScreen(onItemClick: () -> Unit ) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -39,6 +37,7 @@ fun WelcomeScreen(onItemClick: () -> Unit) {
             .padding(10.dp)
     ) {
 
+        val profileViewModel: ProfileViewModel = viewModel()
         val createAccountTextState = remember { mutableStateOf("") }
         val createAccountImg = remember { mutableStateOf("avatar_default") }
 
@@ -117,14 +116,9 @@ fun WelcomeScreen(onItemClick: () -> Unit) {
                     .clip(RoundedCornerShape(50))
                     .background(MaterialTheme.colorScheme.onPrimaryContainer)
                     .clickable(enabled = createAccountTextState.value.isNotEmpty()) {
-                        welcomeViewModel.saveUserDB(
-                            createAccountTextState.value,
-                            createAccountImg.value
-                        )
-                        welcomeViewModel.saveUserDataStore(
-                            createAccountTextState.value,
-                            createAccountImg.value,
-                            CryptoList2Application.getAppContext()
+                        profileViewModel.saveUserDB(createAccountTextState.value, createAccountImg.value)
+                        profileViewModel.saveUserDataStore(
+                            createAccountTextState.value, createAccountImg.value, CryptoList2Application.getAppContext()
                         )
                         onItemClick()
                     },
@@ -139,5 +133,54 @@ fun WelcomeScreen(onItemClick: () -> Unit) {
             }
             Spacer(modifier = Modifier.height(20.dp))
         }
+
+        Spacer(modifier = Modifier.height(40.dp))
+
+        Text(
+            text = "Change profile",
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(20.dp)
+        )
+
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(
+                    1.dp,
+                    MaterialTheme.colorScheme.onPrimaryContainer,
+                    RoundedCornerShape(18.dp)
+                )
+                .clip(RoundedCornerShape(18.dp))
+        ) {
+
+
+            Spacer(modifier = Modifier.height(20.dp))
+            LazyColumn {
+
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(MaterialTheme.colorScheme.onPrimaryContainer)
+                    .clickable(enabled = createAccountTextState.value.isNotEmpty()) {
+                    },
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.save),
+                    contentDescription = "Save",
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
+                    modifier = Modifier
+                        .size(30.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+
     }
 }

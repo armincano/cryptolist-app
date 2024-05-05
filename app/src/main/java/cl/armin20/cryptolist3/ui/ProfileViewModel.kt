@@ -15,11 +15,20 @@ import cl.armin20.cryptolist3.ui.utils.DataStoreUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class WelcomeViewModel : ViewModel() {
+
+class ProfileViewModel : ViewModel() {
 
     private val cryptoListRepository: CryptoListRepositoryInterface = CryptoListRepository.get(
         CryptoList2Application.getAppContext() as Application
     )
+
+    var currentUserName = mutableStateOf("guest")
+    var currentUserAvatar = mutableStateOf("avatar_default")
+
+    init {
+        DataStoreUtils.getUserValuesDataStore(CryptoList2Application.getAppContext(), viewModelScope, currentUserName, currentUserAvatar)
+//        Log.d("WelcomeViewModel", "$currentUserName $currentUserAvatar")
+    }
 
     fun saveUserDB(firstName:String, avatar:String="avatar_default"){
         val user = User(null, firstName, avatar)

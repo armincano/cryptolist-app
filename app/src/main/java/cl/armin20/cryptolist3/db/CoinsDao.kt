@@ -4,8 +4,11 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import cl.armin20.cryptolist3.model.CoinDetailItem
 import cl.armin20.cryptolist3.model.Coins
+import cl.armin20.cryptolist3.model.User
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CoinsDao {
@@ -20,4 +23,8 @@ interface CoinsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addSingle(coin_detail: CoinDetailItem)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertUser(user: User)
+
 }

@@ -1,5 +1,6 @@
 package cl.armin20.cryptolist3.ui
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -85,8 +86,6 @@ fun CryptoScreen(onItemClick: (id: String) -> Unit) {
 // @Preview(showSystemUi = true, device = Devices.NEXUS_6)
 @Composable
 fun Header(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> Unit) {
-    val welcomeViewModel: WelcomeViewModel = viewModel()
-    welcomeViewModel.getFirstUserName("user_name", CryptoList2Application.getAppContext())
 
     Column {
         Row(
@@ -97,7 +96,7 @@ fun Header(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> Unit) 
         ) {
             Column {
                 Text(
-                    text = "Hey, ${welcomeViewModel.currentUserName}!",
+                    text = "Hey, ${cryptoViewModel.currentUserName.value}!",
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(horizontal = 10.dp)
                 )
@@ -107,12 +106,23 @@ fun Header(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> Unit) 
                     modifier = Modifier.padding(horizontal = 10.dp)
                 )
             }
-            Image(
-                painter = painterResource(id = R.drawable.user_1),
-                contentDescription = "Button Image",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.clickable { onItemClick("addUser") }
+
+            val context = LocalContext.current
+            val drawableName = cryptoViewModel.currentUserAvatar.value
+            val resourceId = context.resources.getIdentifier(
+                drawableName,
+                "drawable",
+                context.packageName
             )
+            AsyncImage(
+                model = resourceId,
+                contentDescription = "user avatar",
+                modifier = Modifier
+                    .size(60.dp)
+                    .clickable { onItemClick("profileScreen")},
+                contentScale = ContentScale.Fit
+            )
+
         }
 
         Spacer(modifier = Modifier.height(8.dp))
