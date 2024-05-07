@@ -50,7 +50,30 @@ fun CryptoDetailsScreen(navController: NavController, onItemClick: () -> Unit) {
                 .weight(1f)
                 .padding(15.dp)
         ) {
-            CardHero(cryptoDetailsViewModel)
+            Row (verticalAlignment = Alignment.Bottom){
+                CardHero(cryptoDetailsViewModel)
+
+                Spacer(modifier = Modifier.width(20.dp))
+
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(RoundedCornerShape(50))
+                        .background(MaterialTheme.colorScheme.onPrimaryContainer)
+                        .clickable {
+                        },
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.star_low),
+                        contentDescription = "star icon",
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
+                        modifier = Modifier
+                            .size(30.dp)
+                    )
+                }
+            }
+
             Spacer(modifier = Modifier.height(25.dp))
             PriceSection(cryptoDetailsViewModel)
             Spacer(modifier = Modifier.height(35.dp))
@@ -67,7 +90,7 @@ fun CardHero(cryptoDetailsViewModel: CryptoDetailsViewModel) {
     Box(
         modifier = Modifier
             .cardBgLinearGradient()
-            .size(280.dp)
+            .size(250.dp)
             .border(
                 BorderStroke(1.dp, MaterialTheme.colorScheme.onPrimaryContainer),
                 shape = RoundedCornerShape(30.dp)
@@ -75,7 +98,7 @@ fun CardHero(cryptoDetailsViewModel: CryptoDetailsViewModel) {
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(25.dp)
+            modifier = Modifier.padding(20.dp)
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
@@ -215,7 +238,9 @@ fun OthersValuesSection(cryptoDetailsViewModel: CryptoDetailsViewModel) {
             Spacer(modifier = Modifier.width(10.dp))
 
             Column(
-                modifier = Modifier.weight(1f).padding(start = 30.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 30.dp),
             ) {
                 if (cryptoDetailsViewModel.cryptoDetail.value.data.changePercent24Hr.contains("-")) {
                     Image(

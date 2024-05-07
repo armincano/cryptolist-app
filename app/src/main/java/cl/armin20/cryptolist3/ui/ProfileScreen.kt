@@ -30,7 +30,7 @@ import cl.armin20.cryptolist3.ui.utils.surfaceBgRadialGradient
 
 @Composable
 //@Preview(showSystemUi = true, device = Devices.NEXUS_6)
-fun ProfileScreen(onItemClick: () -> Unit) {
+fun ProfileScreen(onItemClick: (route:String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -137,7 +137,7 @@ fun ProfileScreen(onItemClick: () -> Unit) {
                                 createAccountImg.value,
                                 CryptoList2Application.getAppContext()
                             )
-                            onItemClick()
+                            onItemClick("cryptocoins")
                         },
                 ) {
                     Image(
@@ -224,7 +224,7 @@ fun ProfileScreen(onItemClick: () -> Unit) {
                                 profileViewModel.selectedUserInChangeProfile.value.avatar,
                                 CryptoList2Application.getAppContext()
                             )
-                            onItemClick()
+                            onItemClick("cryptocoins")
                         },
                 ) {
                     Image(
@@ -248,7 +248,7 @@ fun ProfileScreen(onItemClick: () -> Unit) {
 @Composable
 fun BottomProfileScreen(
     profileViewModel: ProfileViewModel,
-    onItemClick: () -> Unit,
+    onItemClick: (route:String) -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -283,7 +283,26 @@ fun BottomProfileScreen(
                     .size(50.dp)
                     .clip(RoundedCornerShape(50))
                     .background(MaterialTheme.colorScheme.onPrimaryContainer)
-                    .clickable { onItemClick() }
+                    .clickable { onItemClick("starredCryptoScreen") }
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.star_profile),
+                    contentDescription = "Starred cryptos",
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
+                    modifier = Modifier
+                        .size(30.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(20.dp))
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(MaterialTheme.colorScheme.onPrimaryContainer)
+                    .clickable { onItemClick("cryptocoins") }
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.home),

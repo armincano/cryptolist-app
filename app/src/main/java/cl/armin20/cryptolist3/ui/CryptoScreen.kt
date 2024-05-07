@@ -78,7 +78,7 @@ fun CryptoScreen(onItemClick: (id: String) -> Unit) {
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
-        BottomCryptoScreen(cryptoViewModel)
+        BottomCryptoScreen(cryptoViewModel, onItemClick = { id -> onItemClick(id) })
     }
 }
 
@@ -225,7 +225,7 @@ fun CryptoListItem(item: Data, onItemClick: (id: String) -> Unit) {
 }
 
 @Composable
-fun BottomCryptoScreen(cryptoViewModel: CryptoViewModel) {
+fun BottomCryptoScreen(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> Unit){
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Top,
@@ -245,11 +245,11 @@ fun BottomCryptoScreen(cryptoViewModel: CryptoViewModel) {
                 .size(50.dp)
                 .clip(RoundedCornerShape(50))
                 .background(MaterialTheme.colorScheme.onPrimaryContainer)
-                .clickable { GlobalScope.launch(Dispatchers.IO) { cryptoViewModel.getCoins() } },
+                .clickable { onItemClick("starredCryptoScreen")  },
         ) {
             Image(
-                painter = painterResource(id = R.drawable.update),
-                contentDescription = "Update",
+                painter = painterResource(id = R.drawable.star_profile),
+                contentDescription = "Starred cryptos",
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
                 modifier = Modifier
                     .size(30.dp)
