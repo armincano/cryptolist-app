@@ -101,7 +101,7 @@ fun Header(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> Unit) 
                     modifier = Modifier.padding(horizontal = 10.dp)
                 )
                 Text(
-                    text = "Good crypto hunt 😄",
+                    text = "You have ${cryptoViewModel.currentUserName.value} ⭐️ cryptos",
                     style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier.padding(horizontal = 10.dp)
                 )

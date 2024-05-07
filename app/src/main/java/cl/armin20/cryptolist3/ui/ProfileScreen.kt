@@ -50,7 +50,7 @@ fun ProfileScreen(onItemClick: () -> Unit) {
             val createAccountImg = remember { mutableStateOf("avatar_default") }
 
             Text(
-                text = "Create an account",
+                text = "Create a profile",
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(bottom = 20.dp)
             )
@@ -68,11 +68,11 @@ fun ProfileScreen(onItemClick: () -> Unit) {
                     .clip(RoundedCornerShape(18.dp))
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
-                Text(
+                /*Text(
                     text = "Choose an avatar",
                     style = MaterialTheme.typography.bodyLarge,
                 )
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(10.dp))*/
                 Row(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier.fillMaxWidth()
@@ -151,10 +151,10 @@ fun ProfileScreen(onItemClick: () -> Unit) {
                 Spacer(modifier = Modifier.height(20.dp))
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(5.dp))
 
             Text(
-                text = "Change profile",
+                text = "Change user",
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(20.dp)
             )
@@ -172,7 +172,7 @@ fun ProfileScreen(onItemClick: () -> Unit) {
                     .clip(RoundedCornerShape(18.dp))
             ) {
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 LazyRow(modifier = Modifier.padding(horizontal = 26.dp)) {
                     items(profileViewModel.users.value) {
@@ -191,17 +191,15 @@ fun ProfileScreen(onItemClick: () -> Unit) {
                         ) {
                             Text(
                                 text = it.firstName,
-                                style = MaterialTheme.typography.titleLarge,
+                                style = MaterialTheme.typography.titleMedium,
                                 modifier = Modifier.padding(10.dp)
                             )
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
-
                 Text(
-                    text = if (profileViewModel.selectedUserInChangeProfile.value.id != null) "${profileViewModel.selectedUserInChangeProfile.value.firstName} selected" else "Select a profile",
+                    text = if (profileViewModel.selectedUserInChangeProfile.value.id != null) "${profileViewModel.selectedUserInChangeProfile.value.firstName} selected" else "Select a name and press",
                     style = MaterialTheme.typography.bodyLarge,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -230,7 +228,7 @@ fun ProfileScreen(onItemClick: () -> Unit) {
                         },
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.save),
+                        painter = painterResource(id = R.drawable.shoe),
                         contentDescription = "Save",
                         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
                         modifier = Modifier

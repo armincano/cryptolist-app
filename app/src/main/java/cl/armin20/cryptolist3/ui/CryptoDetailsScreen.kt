@@ -215,7 +215,7 @@ fun OthersValuesSection(cryptoDetailsViewModel: CryptoDetailsViewModel) {
             Spacer(modifier = Modifier.width(10.dp))
 
             Column(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).padding(start = 30.dp),
             ) {
                 if (cryptoDetailsViewModel.cryptoDetail.value.data.changePercent24Hr.contains("-")) {
                     Image(
