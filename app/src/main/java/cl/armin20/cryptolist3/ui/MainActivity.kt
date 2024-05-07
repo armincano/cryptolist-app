@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
 private fun CryptoListApp() {
     val navController = rememberNavController()
     val isFirstRun = remember { mutableStateOf(false) }
-    var startDestination = "cryptocoins"
+    var startDestination = "splashScreen"
     val scope = rememberCoroutineScope()
     scope.launch(Dispatchers.IO) {
         DataStoreUtils.getFirstRunValueDataStore(
@@ -69,9 +69,16 @@ private fun CryptoListApp() {
 
         composable(route = "welcomeScreen") {
             WelcomeScreen {
+                navController.navigate("splashScreen")
+            }
+        }
+
+        composable(route = "splashScreen") {
+            SplashScreen {
                 navController.navigate("cryptocoins")
             }
         }
+
 
         composable(route = "profileScreen") {
             ProfileScreen {
