@@ -2,6 +2,7 @@ package cl.armin20.cryptolist3.ui
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,10 +25,14 @@ class ProfileViewModel : ViewModel() {
 
     var currentUserName = mutableStateOf("guest")
     var currentUserAvatar = mutableStateOf("avatar_default")
+    var users = mutableStateOf(listOf<User>())
+    var selectedUserInChangeProfile = mutableStateOf(User(null, "", ""))
 
     init {
         DataStoreUtils.getUserValuesDataStore(CryptoList2Application.getAppContext(), viewModelScope, currentUserName, currentUserAvatar)
-//        Log.d("WelcomeViewModel", "$currentUserName $currentUserAvatar")
+        viewModelScope.launch(Dispatchers.Main) {
+            users.value =  cryptoListRepository.getAllUsers()
+        }
     }
 
     fun saveUserDB(firstName:String, avatar:String="avatar_default"){

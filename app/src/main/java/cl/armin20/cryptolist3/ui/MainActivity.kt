@@ -29,6 +29,7 @@ import cl.armin20.cryptolist3.ui.theme.CryptolistTheme
 import cl.armin20.cryptolist3.ui.utils.DataStoreUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,13 +60,10 @@ private fun CryptoListApp() {
             isFirstRun
         )
     }
-    Log.d("FirstRun", isFirstRun.value.toString())
     if (isFirstRun.value) {
-        scope.launch(Dispatchers.IO) {
-            writeFirstRun(CryptoList2Application.getAppContext())
-        }
         startDestination = "welcomeScreen"
     }
+
 
     NavHost(navController, startDestination = startDestination) {
 

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import cl.armin20.cryptolist3.CryptoList2Application
 import cl.armin20.cryptolist3.data.local.CryptoListRepository
 import cl.armin20.cryptolist3.data.local.CryptoListRepositoryInterface
+import cl.armin20.cryptolist3.data.local.writeFirstRun
 import cl.armin20.cryptolist3.data.local.writeUserAvatar
 import cl.armin20.cryptolist3.data.local.writeUserName
 import cl.armin20.cryptolist3.model.User
@@ -20,6 +21,13 @@ class WelcomeViewModel : ViewModel() {
     private val cryptoListRepository: CryptoListRepositoryInterface = CryptoListRepository.get(
         CryptoList2Application.getAppContext() as Application
     )
+
+    fun saveFirstRun(context: Context) {
+
+        viewModelScope.launch(Dispatchers.IO) {
+            writeFirstRun(context)
+        }
+    }
 
     fun saveUserDB(firstName:String, avatar:String="avatar_default"){
         val user = User(null, firstName, avatar)

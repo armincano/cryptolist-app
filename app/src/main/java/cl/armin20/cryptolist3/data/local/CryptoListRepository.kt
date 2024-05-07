@@ -1,8 +1,6 @@
 package cl.armin20.cryptolist3.data.local
 
 import android.app.Application
-import android.content.ContentValues
-import android.util.Log
 import android.widget.Toast
 import cl.armin20.cryptolist3.CryptoList2Application
 import cl.armin20.cryptolist3.NetworkPing
@@ -11,9 +9,7 @@ import cl.armin20.cryptolist3.model.CoinDetailItem
 import cl.armin20.cryptolist3.model.Coins
 import cl.armin20.cryptolist3.model.Data
 import cl.armin20.cryptolist3.data.remote.CoincapRetrofitClient
-import cl.armin20.cryptolist3.data.local.CryptoListRepositoryInterface
 import cl.armin20.cryptolist3.model.User
-import cl.armin20.cryptolist3.model.Users
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -29,16 +25,16 @@ class CryptoListRepository(application: Application) : CryptoListRepositoryInter
         coinsDao.upsertUser(user)
     }
 
-    override suspend fun getUsers(): Users {
-        TODO("Not yet implemented")
+    override suspend fun getAllUsers(): List<User> {
+        return coinsDao.getAllUsers()
     }
 
-    override suspend fun getCoinsAll(): Coins {
+    override suspend fun getAllCoins(): Coins {
         try {
             if (NetworkPing.getStatus("https://www.google.com/")) {
                 val coins = coincapApiService.getAllCoinsPrices()
-                coinsDao.addAll(coins)
-                return coinsDao.getAll()
+                coinsDao.addAllCoins(coins)
+                return coinsDao.getAllCoins()
             } else {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
@@ -62,13 +58,13 @@ class CryptoListRepository(application: Application) : CryptoListRepositoryInter
         return Coins(0, emptyList(), 0)
     }
 
-    override suspend fun getCoinsSingle(id: String): CoinDetailItem {
+    override suspend fun getSingleCoin(id: String): CoinDetailItem {
         try {
             if (NetworkPing.getStatus("https://www.google.com/")) {
                 val detailCoins = coincapApiService.getSingleDetail(id)
                 detailCoins.coinId = id
-                coinsDao.addSingle(detailCoins)
-                return coinsDao.getSingle(id)
+                coinsDao.addSingleCoin(detailCoins)
+                return coinsDao.getSingleCoin(id)
             } else {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(

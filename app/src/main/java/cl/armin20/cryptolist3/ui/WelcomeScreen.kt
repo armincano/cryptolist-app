@@ -23,7 +23,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.armin20.cryptolist3.CryptoList2Application
 import cl.armin20.cryptolist3.R
+import cl.armin20.cryptolist3.data.local.writeFirstRun
 import cl.armin20.cryptolist3.ui.utils.surfaceBgRadialGradient
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 //@Preview(showSystemUi = true, device = Devices.NEXUS_6)
@@ -126,6 +129,8 @@ fun WelcomeScreen(onItemClick: () -> Unit) {
                             createAccountImg.value,
                             CryptoList2Application.getAppContext()
                         )
+                        welcomeViewModel.saveFirstRun(CryptoList2Application.getAppContext())
+
                         onItemClick()
                     },
             ) {

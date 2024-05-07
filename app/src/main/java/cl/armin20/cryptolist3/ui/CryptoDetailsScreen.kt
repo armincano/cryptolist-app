@@ -307,7 +307,6 @@ fun BottomDetailsScreen(
         }
 
     }
-
 }
 
 

@@ -94,7 +94,7 @@ fun Header(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> Unit) 
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            Column {
+            Column (modifier = Modifier.weight(1f)){
                 Text(
                     text = "Hey, ${cryptoViewModel.currentUserName.value}!",
                     style = MaterialTheme.typography.bodyLarge,

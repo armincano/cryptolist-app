@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.content.ContentValues.TAG
 import android.util.Log
-import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.armin20.cryptolist3.ui.utils.DataStoreUtils
 
 //stateHandle guarda el estado, mantien la posición de scrolling y evita el system initiated process death.
@@ -35,10 +34,8 @@ class CryptoViewModel(private val stateHandle: SavedStateHandle) : ViewModel() {
     var currentUserAvatar = mutableStateOf("avatar_default")
 
     init {
-        Log.d("WelcomeViewModelbefore", "$currentUserName $currentUserAvatar")
         DataStoreUtils.getUserValuesDataStore(CryptoList2Application.getAppContext(), viewModelScope, currentUserName, currentUserAvatar)
         getCoins()
-        Log.d("WelcomeViewModelafter", "$currentUserName $currentUserAvatar")
     }
 
     fun getDateTime(s: Long): String {
@@ -54,7 +51,7 @@ class CryptoViewModel(private val stateHandle: SavedStateHandle) : ViewModel() {
     fun getCoins() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val fromRepositoryAll = cryptoListRepository.getCoinsAll()
+                val fromRepositoryAll = cryptoListRepository.getAllCoins()
                 withContext(Dispatchers.Main) {//Recuerda que la UI se trabaja en Main
                     cryptoList.value = fromRepositoryAll
                 }
