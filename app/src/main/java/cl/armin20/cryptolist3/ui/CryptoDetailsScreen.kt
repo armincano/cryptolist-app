@@ -13,8 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
@@ -29,9 +27,6 @@ import cl.armin20.cryptolist3.ui.utils.cardBgLinearGradient
 import cl.armin20.cryptolist3.ui.utils.surfaceBgRadialGradient
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun CryptoDetailsScreen(navController: NavController, onItemClick: () -> Unit) {
@@ -50,7 +45,7 @@ fun CryptoDetailsScreen(navController: NavController, onItemClick: () -> Unit) {
                 .weight(1f)
                 .padding(15.dp)
         ) {
-            Row (verticalAlignment = Alignment.Bottom){
+            Row(verticalAlignment = Alignment.Bottom) {
                 CardHero(cryptoDetailsViewModel)
 
                 Spacer(modifier = Modifier.width(20.dp))
@@ -62,6 +57,7 @@ fun CryptoDetailsScreen(navController: NavController, onItemClick: () -> Unit) {
                         .clip(RoundedCornerShape(50))
                         .background(MaterialTheme.colorScheme.onPrimaryContainer)
                         .clickable {
+                            cryptoDetailsViewModel.addStarredCoin(cryptoDetailsViewModel.cryptoDetail.value.data.id)
                         },
                 ) {
                     Image(
@@ -279,7 +275,7 @@ fun BottomDetailsScreen(
     ) {
 
         Text(
-            text = "Updated on ${cryptoDetailsViewModel.getVersionDate(cryptoDetailsViewModel.cryptoDetail.value.timestamp)} 🔄",
+            text = "Updated on ${cryptoDetailsViewModel.parseTimestamp(cryptoDetailsViewModel.cryptoDetail.value.timestamp)} 🔄",
             style = MaterialTheme.typography.labelSmall,
             modifier = Modifier
                 .padding(horizontal = 10.dp)
@@ -305,30 +301,6 @@ fun BottomDetailsScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.width(30.dp))
-
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(MaterialTheme.colorScheme.onPrimaryContainer)
-                    .clickable {
-                        GlobalScope.launch(Dispatchers.IO) {
-                            cryptoDetailsViewModel.getDetailCoin(
-                                cryptoDetailsViewModel.id
-                            )
-                        }
-                    },
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.update),
-                    contentDescription = "Update",
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
-                    modifier = Modifier
-                        .size(30.dp)
-                )
-            }
         }
 
     }

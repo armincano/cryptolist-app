@@ -23,7 +23,6 @@ class WelcomeViewModel : ViewModel() {
     )
 
     fun saveFirstRun(context: Context) {
-
         viewModelScope.launch(Dispatchers.IO) {
             writeFirstRun(context)
         }

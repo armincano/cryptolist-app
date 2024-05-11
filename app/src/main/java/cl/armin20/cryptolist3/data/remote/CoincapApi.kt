@@ -8,9 +8,9 @@ import retrofit2.http.Path
 
 interface CoincapApi {
     @GET("assets/")
-    suspend fun getAllCoinsPrices(): Coins
+    suspend fun getAllCoins(): Coins
 
     @GET("assets/{id}/")
-    suspend fun getSingleDetail(@Path("id") id: String): CoinDetailItem
+    suspend fun getSingleCoin(@Path("id") id: String): CoinDetailItem
 
 }

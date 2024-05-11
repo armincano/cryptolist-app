@@ -12,6 +12,7 @@ import cl.armin20.cryptolist3.model.CoinDetailItem
 import cl.armin20.cryptolist3.model.Data
 import cl.armin20.cryptolist3.data.local.CryptoListRepository
 import cl.armin20.cryptolist3.data.local.CryptoListRepositoryInterface
+import cl.armin20.cryptolist3.model.StarredCoin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -24,6 +25,9 @@ class CryptoDetailsViewModel(stateHandle: SavedStateHandle) : ViewModel() {
         CryptoList2Application.getAppContext() as Application
     )
 
+    var id = "nameOfCrypto"
+    var isStarred = mutableStateOf(false)
+
     //value holder whose reads and writes are observed by Compose
     val cryptoDetail = mutableStateOf(
         CoinDetailItem(
@@ -33,21 +37,25 @@ class CryptoDetailsViewModel(stateHandle: SavedStateHandle) : ViewModel() {
         )
     )
 
-    fun getVersionDate(s: Long): String {
-        return try {
-            val sdf = SimpleDateFormat("MMMM dd, HH:mm:ss")//"dd MMMM yyyy, HH:mm:ss"
-            val date = Date(s)
-            sdf.format(date)
-        } catch (e: Exception) {
-            e.toString()
-        }
-    }
-
-    var id = "0"
-
     init {
         id = stateHandle.get<String>("id") ?: ""
         getDetailCoin(id)
+        isSingleCoinStarred(id)
+    }
+
+    fun addStarredCoin(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            cryptoListRepository.addStarredCoin(StarredCoin(id))
+            isStarred.value = true
+        }
+    }
+
+    fun isSingleCoinStarred(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main){
+                isStarred.value = cryptoListRepository.isSingleCoinStarred(id)
+            }
+        }
     }
 
     fun getDetailCoin(id: String) {
@@ -62,5 +70,16 @@ class CryptoDetailsViewModel(stateHandle: SavedStateHandle) : ViewModel() {
             }
         }
     }
+
+    fun parseTimestamp(timestamp: Long): String {
+        return try {
+            val sdf = SimpleDateFormat("MMMM dd, HH:mm:ss")//"dd MMMM yyyy, HH:mm:ss"
+            val date = Date(timestamp)
+            sdf.format(date)
+        } catch (e: Exception) {
+            e.toString()
+        }
+    }
+
 }
 

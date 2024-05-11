@@ -9,6 +9,7 @@ import cl.armin20.cryptolist3.model.CoinDetailItem
 import cl.armin20.cryptolist3.model.Coins
 import cl.armin20.cryptolist3.model.Data
 import cl.armin20.cryptolist3.data.remote.CoincapRetrofitClient
+import cl.armin20.cryptolist3.model.StarredCoin
 import cl.armin20.cryptolist3.model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -29,10 +30,26 @@ class CryptoListRepository(application: Application) : CryptoListRepositoryInter
         return coinsDao.getAllUsers()
     }
 
+    override suspend fun addStarredCoin(starredCoin: StarredCoin) {
+        coinsDao.addStarredCoin(starredCoin)
+    }
+
+    override suspend fun removeStarredCoin(starredCoin: StarredCoin) {
+        coinsDao.removeStarredCoin(starredCoin)
+    }
+
+    override suspend fun getAllStarredCoins(): List<StarredCoin> {
+        return coinsDao.getAllStarredCoin()
+    }
+
+    override suspend fun isSingleCoinStarred(id: String): Boolean {
+        return coinsDao.isSingleCoinStarred(id)
+    }
+
     override suspend fun getAllCoins(): Coins {
         try {
             if (NetworkPing.getStatus("https://www.google.com/")) {
-                val coins = coincapApiService.getAllCoinsPrices()
+                val coins = coincapApiService.getAllCoins()
                 coinsDao.addAllCoins(coins)
                 return coinsDao.getAllCoins()
             } else {
@@ -61,7 +78,7 @@ class CryptoListRepository(application: Application) : CryptoListRepositoryInter
     override suspend fun getSingleCoin(id: String): CoinDetailItem {
         try {
             if (NetworkPing.getStatus("https://www.google.com/")) {
-                val detailCoins = coincapApiService.getSingleDetail(id)
+                val detailCoins = coincapApiService.getSingleCoin(id)
                 detailCoins.coinId = id
                 coinsDao.addSingleCoin(detailCoins)
                 return coinsDao.getSingleCoin(id)

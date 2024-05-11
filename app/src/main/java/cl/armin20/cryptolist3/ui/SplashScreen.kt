@@ -15,18 +15,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.armin20.cryptolist3.R
 import cl.armin20.cryptolist3.ui.utils.surfaceBgRadialGradient
 import kotlinx.coroutines.delay
 
 @Composable
 //@Preview(showSystemUi = true, device = Devices.NEXUS_6)
-fun SplashScreen(onItemClick: () -> Unit) {
+fun SplashScreen(onItemClick: (route: String) -> Unit) {
 
-    LaunchedEffect(key1 = true) {
-        delay(369L)
-        onItemClick()
+    val splashViewModel:SplashViewModel = viewModel()
+
+    LaunchedEffect(splashViewModel.isFirstRunDataStoreGot.value) {
+        if (splashViewModel.isFirstRun.value) {
+            onItemClick("welcomeScreen")
+        } else {
+            onItemClick("cryptocoins")
+        }
     }
+    // Why de delay? In MainActivity.kt we must check a DataStore value to set startDestination
+    //depending on the value. This delay is the time it takes to check the value.
 
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
