@@ -15,6 +15,7 @@ import cl.armin20.cryptolist3.model.User
 import cl.armin20.cryptolist3.ui.utils.DataStoreUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class WelcomeViewModel : ViewModel() {
 
@@ -22,23 +23,16 @@ class WelcomeViewModel : ViewModel() {
         CryptoList2Application.getAppContext() as Application
     )
 
-    fun saveFirstRun(context: Context) {
+    fun saveFirstRunAndUserDBAndUserDataStore(context: Context, firstName:String, avatar:String="avatar_default", onItemClick: () -> Unit){
         viewModelScope.launch(Dispatchers.IO) {
             writeFirstRun(context)
-        }
-    }
-
-    fun saveUserDB(firstName:String, avatar:String="avatar_default"){
-        val user = User(null, firstName, avatar)
-        viewModelScope.launch(Dispatchers.IO) {
-            cryptoListRepository.addUser(user)
-        }
-    }
-
-    fun saveUserDataStore(firstName:String, avatar:String="avatar_default", context: Context) {
-        viewModelScope.launch(Dispatchers.IO) {
             writeUserName(firstName, context)
             writeUserAvatar(avatar, context)
+            val user = User(null, firstName, avatar)
+            cryptoListRepository.addUser(user)
+            withContext(Dispatchers.Main) {
+                onItemClick()
+            }
         }
     }
 

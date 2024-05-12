@@ -1,5 +1,6 @@
 package cl.armin20.cryptolist3.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,25 +25,26 @@ import kotlinx.coroutines.delay
 //@Preview(showSystemUi = true, device = Devices.NEXUS_6)
 fun SplashScreen(onItemClick: (route: String) -> Unit) {
 
-    val splashViewModel:SplashViewModel = viewModel()
+    val splashViewModel: SplashViewModel = viewModel()
 
-    LaunchedEffect(splashViewModel.isFirstRunDataStoreGot.value) {
+    LaunchedEffect(splashViewModel.isInitComplete.value) {
+        if (!splashViewModel.isInitComplete.value) return@LaunchedEffect
+
         if (splashViewModel.isFirstRun.value) {
             onItemClick("welcomeScreen")
         } else {
             onItemClick("cryptocoins")
         }
     }
-    // Why de delay? In MainActivity.kt we must check a DataStore value to set startDestination
-    //depending on the value. This delay is the time it takes to check the value.
 
-    Column (
+    Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-        .fillMaxSize()
-        .surfaceBgRadialGradient()
-        .padding(20.dp)){
+            .fillMaxSize()
+            .surfaceBgRadialGradient()
+            .padding(20.dp)
+    ) {
 
         Image(
             painter = painterResource(id = R.drawable.cryptolist_logo),

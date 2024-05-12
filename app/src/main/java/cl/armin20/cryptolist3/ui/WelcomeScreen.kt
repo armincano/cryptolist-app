@@ -120,18 +120,12 @@ fun WelcomeScreen(onItemClick: () -> Unit) {
                     .clip(RoundedCornerShape(50))
                     .background(MaterialTheme.colorScheme.onPrimaryContainer)
                     .clickable(enabled = createAccountTextState.value.isNotEmpty()) {
-                        welcomeViewModel.saveUserDB(
-                            createAccountTextState.value,
-                            createAccountImg.value
-                        )
-                        welcomeViewModel.saveUserDataStore(
+                        welcomeViewModel.saveFirstRunAndUserDBAndUserDataStore(
+                            CryptoList2Application.getAppContext(),
                             createAccountTextState.value,
                             createAccountImg.value,
-                            CryptoList2Application.getAppContext()
+                            onItemClick
                         )
-                        welcomeViewModel.saveFirstRun(CryptoList2Application.getAppContext())
-
-                        onItemClick()
                     },
             ) {
                 Image(

@@ -2,6 +2,7 @@ package cl.armin20.cryptolist3.ui.utils
 
 import android.content.Context
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import cl.armin20.cryptolist3.data.local.getFirstRunValue
 import cl.armin20.cryptolist3.data.local.getUserValue
 import kotlinx.coroutines.CoroutineScope
@@ -12,16 +13,8 @@ import kotlinx.coroutines.withContext
 
 object DataStoreUtils {
 
-    fun getFirstRunValueDataStore(
-        context: Context,
-        viewModelScope: CoroutineScope,
-        isFirstRun : MutableState<Boolean>
-    ) {
-        viewModelScope.launch(Dispatchers.IO) {
-            withContext(Dispatchers.Main) {
-                isFirstRun.value = getFirstRunValue(context).first()
-            }
-        }
+    suspend fun getFirstRunValueDataStore(context: Context): Boolean {
+        return getFirstRunValue(context).first()
     }
 
     fun getUserValuesDataStore(
