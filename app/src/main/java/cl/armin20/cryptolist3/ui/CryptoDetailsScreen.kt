@@ -57,16 +57,28 @@ fun CryptoDetailsScreen(navController: NavController, onItemClick: () -> Unit) {
                         .clip(RoundedCornerShape(50))
                         .background(MaterialTheme.colorScheme.onPrimaryContainer)
                         .clickable {
-                            cryptoDetailsViewModel.addStarredCoin(cryptoDetailsViewModel.cryptoDetail.value.data.id)
+                            if (cryptoDetailsViewModel.isStarred.value) {
+                                cryptoDetailsViewModel.removeStarredCoin(cryptoDetailsViewModel.cryptoDetail.value.data.id)
+                            } else
+                                cryptoDetailsViewModel.addStarredCoin(cryptoDetailsViewModel.cryptoDetail.value.data.id)
                         },
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.star_low),
-                        contentDescription = "star icon",
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
-                        modifier = Modifier
-                            .size(30.dp)
-                    )
+                    if (cryptoDetailsViewModel.isStarred.value) {
+                        Image(
+                            painter = painterResource(id = R.drawable.star_full),
+                            contentDescription = "star icon",
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
+                    } else
+                        Image(
+                            painter = painterResource(id = R.drawable.star_low),
+                            contentDescription = "star icon",
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
                 }
             }
 

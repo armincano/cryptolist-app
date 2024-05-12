@@ -26,7 +26,7 @@ class CryptoDetailsViewModel(stateHandle: SavedStateHandle) : ViewModel() {
     )
 
     var id = "nameOfCrypto"
-    var isStarred = mutableStateOf(false)
+    val isStarred = mutableStateOf(false)
 
     //value holder whose reads and writes are observed by Compose
     val cryptoDetail = mutableStateOf(
@@ -47,6 +47,13 @@ class CryptoDetailsViewModel(stateHandle: SavedStateHandle) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             cryptoListRepository.addStarredCoin(StarredCoin(id))
             isStarred.value = true
+        }
+    }
+
+    fun removeStarredCoin(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            cryptoListRepository.removeStarredCoin(StarredCoin(id))
+            isStarred.value = false
         }
     }
 

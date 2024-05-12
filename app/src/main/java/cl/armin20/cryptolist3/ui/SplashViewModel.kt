@@ -22,9 +22,7 @@ class SplashViewModel : ViewModel() {
             val firstRunValue = DataStoreUtils.getFirstRunValueDataStore(
                 CryptoList2Application.getAppContext()
             )
-            Log.d("firstRunValue", firstRunValue.toString())
             withContext(Dispatchers.Main) {
-                Log.d("firstRun", firstRunValue.toString())
                 isFirstRun.value = firstRunValue
                 isInitComplete.value = true
             }
