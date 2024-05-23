@@ -11,10 +11,12 @@ import cl.armin20.cryptolist3.data.local.CryptoListRepository
 import cl.armin20.cryptolist3.data.local.CryptoListRepositoryInterface
 import cl.armin20.cryptolist3.data.local.writeUserAvatar
 import cl.armin20.cryptolist3.data.local.writeUserName
+import cl.armin20.cryptolist3.model.StarredCoin
 import cl.armin20.cryptolist3.model.User
 import cl.armin20.cryptolist3.ui.utils.DataStoreUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class ProfileViewModel : ViewModel() {
@@ -27,11 +29,22 @@ class ProfileViewModel : ViewModel() {
     var currentUserAvatar = mutableStateOf("avatar_default")
     var users = mutableStateOf(listOf<User>())
     var selectedUserInChangeProfile = mutableStateOf(User(null, "", ""))
+    var starredCryptoList = mutableStateOf(listOf<StarredCoin>())
 
     init {
         DataStoreUtils.getUserValuesDataStore(CryptoList2Application.getAppContext(), viewModelScope, currentUserName, currentUserAvatar)
+        getAllStarredCryptos()
         viewModelScope.launch(Dispatchers.Main) {
             users.value =  cryptoListRepository.getAllUsers()
+        }
+    }
+
+    fun getAllStarredCryptos() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val allStarredCoins = cryptoListRepository.getAllStarredCoins()
+            withContext(Dispatchers.Main) {
+                starredCryptoList.value = allStarredCoins
+            }
         }
     }
 

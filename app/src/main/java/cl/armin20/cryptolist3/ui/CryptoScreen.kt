@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -26,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
 import cl.armin20.cryptolist3.CryptoList2Application
 import cl.armin20.cryptolist3.R
 import cl.armin20.cryptolist3.model.Data
@@ -45,6 +47,12 @@ import kotlinx.coroutines.launch
 fun CryptoScreen(onItemClick: (id: String) -> Unit) {
     //Instanciar el ViewModel de forma correcta, sin entregar parámetros
     val cryptoViewModel: CryptoViewModel = viewModel()
+    val navController = rememberNavController()
+
+    LaunchedEffect(navController) {
+        cryptoViewModel.getAllStarredCryptos()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -94,14 +102,14 @@ fun Header(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> Unit) 
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            Column (modifier = Modifier.weight(1f)){
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = "Hey, ${cryptoViewModel.currentUserName.value}!",
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(horizontal = 10.dp)
                 )
                 Text(
-                    text = "You have ${cryptoViewModel.currentUserName.value} ⭐️ cryptos",
+                    text = "You have ${cryptoViewModel.starredCryptoList.value.size} ⭐️ cryptos",
                     style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier.padding(horizontal = 10.dp)
                 )
@@ -119,7 +127,7 @@ fun Header(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> Unit) 
                 contentDescription = "user avatar",
                 modifier = Modifier
                     .size(60.dp)
-                    .clickable { onItemClick("profileScreen")},
+                    .clickable { onItemClick("profileScreen") },
                 contentScale = ContentScale.Fit
             )
 
@@ -225,7 +233,7 @@ fun CryptoListItem(item: Data, onItemClick: (id: String) -> Unit) {
 }
 
 @Composable
-fun BottomCryptoScreen(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> Unit){
+fun BottomCryptoScreen(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> Unit) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Top,
@@ -245,7 +253,7 @@ fun BottomCryptoScreen(cryptoViewModel: CryptoViewModel, onItemClick: (id: Strin
                 .size(50.dp)
                 .clip(RoundedCornerShape(50))
                 .background(MaterialTheme.colorScheme.onPrimaryContainer)
-                .clickable { onItemClick("starredCryptoScreen")  },
+                .clickable { },
         ) {
             Image(
                 painter = painterResource(id = R.drawable.star_profile),

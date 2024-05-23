@@ -72,11 +72,11 @@ private fun CryptoListApp() {
             }
         }
 
-        composable(route = "starredCryptoScreen") {
-            StarredCryptoScreen {string ->
-                navController.navigate(string)
-            }
-        } // The StarredCryptoScreen composable has callback 'onItemClick: () -> Unit'
+//        composable(route = "starredCryptoScreen") {
+//            StarredCryptoScreen {string ->
+//                navController.navigate(string)
+//            }
+//        } // The StarredCryptoScreen composable has callback 'onItemClick: () -> Unit'
         // with no parameter so it will navigate to the hardcoded string in this file
 
         composable(route = "cryptocoins") {

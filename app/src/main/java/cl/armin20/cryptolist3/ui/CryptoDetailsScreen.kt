@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,6 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import cl.armin20.cryptolist3.R
 import cl.armin20.cryptolist3.ui.utils.cardBgLinearGradient
 import cl.armin20.cryptolist3.ui.utils.surfaceBgRadialGradient
@@ -32,6 +34,9 @@ import coil.request.ImageRequest
 
 @Composable
 fun CryptoDetailsScreen(navController: NavController, onItemClick: () -> Unit) {
+
+    val cryptoDetailsViewModel: CryptoDetailsViewModel = viewModel()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -40,7 +45,7 @@ fun CryptoDetailsScreen(navController: NavController, onItemClick: () -> Unit) {
     )
     {
 
-        val cryptoDetailsViewModel: CryptoDetailsViewModel = viewModel()
+
         val isStarred by cryptoDetailsViewModel.isStarredFlow.collectAsState()
 
         Column(

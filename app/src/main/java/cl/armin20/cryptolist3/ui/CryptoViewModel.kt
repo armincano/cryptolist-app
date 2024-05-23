@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.content.ContentValues.TAG
 import android.util.Log
+import cl.armin20.cryptolist3.model.StarredCoin
 import cl.armin20.cryptolist3.ui.utils.DataStoreUtils
 
 //stateHandle guarda el estado, mantien la posición de scrolling y evita el system initiated process death.
@@ -33,8 +34,15 @@ class CryptoViewModel(private val stateHandle: SavedStateHandle) : ViewModel() {
     var currentUserName = mutableStateOf("guest")
     var currentUserAvatar = mutableStateOf("avatar_default")
 
+    var starredCryptoList = mutableStateOf(listOf<StarredCoin>())
+
     init {
-        DataStoreUtils.getUserValuesDataStore(CryptoList2Application.getAppContext(), viewModelScope, currentUserName, currentUserAvatar)
+        DataStoreUtils.getUserValuesDataStore(
+            CryptoList2Application.getAppContext(),
+            viewModelScope,
+            currentUserName,
+            currentUserAvatar
+        )
         getCoins()
     }
 
@@ -45,6 +53,15 @@ class CryptoViewModel(private val stateHandle: SavedStateHandle) : ViewModel() {
             sdf.format(date)
         } catch (e: Exception) {
             e.toString()
+        }
+    }
+
+    fun getAllStarredCryptos() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val allStarredCoins = cryptoListRepository.getAllStarredCoins()
+            withContext(Dispatchers.Main) {
+                starredCryptoList.value = allStarredCoins
+            }
         }
     }
 

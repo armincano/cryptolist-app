@@ -269,32 +269,13 @@ fun BottomProfileScreen(
             )
 
             Text(
-                text = "You have ${profileViewModel.currentUserName.value} ⭐️ cryptos",
+                text = "You have ${profileViewModel.starredCryptoList.value.size} ⭐️ cryptos",
                 style = MaterialTheme.typography.labelSmall,
             )
 
         }
 
         Row(horizontalArrangement = Arrangement.SpaceAround) {
-
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(MaterialTheme.colorScheme.onPrimaryContainer)
-                    .clickable { onItemClick("starredCryptoScreen") }
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.star_profile),
-                    contentDescription = "Starred cryptos",
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
-                    modifier = Modifier
-                        .size(30.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(20.dp))
 
             Box(
                 contentAlignment = Alignment.Center,
