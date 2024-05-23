@@ -10,6 +10,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +41,7 @@ fun CryptoDetailsScreen(navController: NavController, onItemClick: () -> Unit) {
     {
 
         val cryptoDetailsViewModel: CryptoDetailsViewModel = viewModel()
+        val isStarred by cryptoDetailsViewModel.isStarredFlow.collectAsState()
 
         Column(
             modifier = Modifier
@@ -50,20 +53,17 @@ fun CryptoDetailsScreen(navController: NavController, onItemClick: () -> Unit) {
 
                 Spacer(modifier = Modifier.width(20.dp))
 
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clip(RoundedCornerShape(50))
-                        .background(MaterialTheme.colorScheme.onPrimaryContainer)
-                        .clickable {
-                            if (cryptoDetailsViewModel.isStarred.value) {
+                if (isStarred) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(RoundedCornerShape(50))
+                            .background(MaterialTheme.colorScheme.onPrimaryContainer)
+                            .clickable {
                                 cryptoDetailsViewModel.removeStarredCoin(cryptoDetailsViewModel.cryptoDetail.value.data.id)
-                            } else
-                                cryptoDetailsViewModel.addStarredCoin(cryptoDetailsViewModel.cryptoDetail.value.data.id)
-                        },
-                ) {
-                    if (cryptoDetailsViewModel.isStarred.value) {
+                            }
+                    ) {
                         Image(
                             painter = painterResource(id = R.drawable.star_full),
                             contentDescription = "star icon",
@@ -71,7 +71,18 @@ fun CryptoDetailsScreen(navController: NavController, onItemClick: () -> Unit) {
                             modifier = Modifier
                                 .size(30.dp)
                         )
-                    } else
+                    }
+                } else {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(RoundedCornerShape(50))
+                            .background(MaterialTheme.colorScheme.onPrimaryContainer)
+                            .clickable {
+                                cryptoDetailsViewModel.addStarredCoin(cryptoDetailsViewModel.cryptoDetail.value.data.id)
+                            }
+                    ) {
                         Image(
                             painter = painterResource(id = R.drawable.star_low),
                             contentDescription = "star icon",
@@ -79,7 +90,9 @@ fun CryptoDetailsScreen(navController: NavController, onItemClick: () -> Unit) {
                             modifier = Modifier
                                 .size(30.dp)
                         )
+                    }
                 }
+
             }
 
             Spacer(modifier = Modifier.height(25.dp))

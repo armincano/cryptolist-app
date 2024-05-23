@@ -42,7 +42,7 @@ class CryptoListRepository(application: Application) : CryptoListRepositoryInter
         return coinsDao.getAllStarredCoin()
     }
 
-    override suspend fun isSingleCoinStarred(id: String): Boolean {
+    override suspend fun isSingleCoinStarred(id: String): Int {
         return coinsDao.isSingleCoinStarred(id)
     }
 

@@ -14,6 +14,9 @@ import cl.armin20.cryptolist3.data.local.CryptoListRepository
 import cl.armin20.cryptolist3.data.local.CryptoListRepositoryInterface
 import cl.armin20.cryptolist3.model.StarredCoin
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
@@ -25,8 +28,8 @@ class CryptoDetailsViewModel(stateHandle: SavedStateHandle) : ViewModel() {
         CryptoList2Application.getAppContext() as Application
     )
 
-    var id = "nameOfCrypto"
-    val isStarred = mutableStateOf(false)
+    var id = stateHandle.get<String>("id") ?: ""
+    val isStarredFlow = MutableStateFlow(false)
 
     //value holder whose reads and writes are observed by Compose
     val cryptoDetail = mutableStateOf(
@@ -38,29 +41,30 @@ class CryptoDetailsViewModel(stateHandle: SavedStateHandle) : ViewModel() {
     )
 
     init {
-        id = stateHandle.get<String>("id") ?: ""
-        getDetailCoin(id)
         isSingleCoinStarred(id)
+        getDetailCoin(id)
     }
 
     fun addStarredCoin(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             cryptoListRepository.addStarredCoin(StarredCoin(id))
-            isStarred.value = true
+            isStarredFlow.emit(true)
         }
+        Log.d(ContentValues.TAG, "isSingleCoinStarred: ${isStarredFlow.value}")
     }
 
     fun removeStarredCoin(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             cryptoListRepository.removeStarredCoin(StarredCoin(id))
-            isStarred.value = false
+            isStarredFlow.emit(false)
         }
     }
 
     fun isSingleCoinStarred(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            val isStarred = cryptoListRepository.isSingleCoinStarred(id) == 1
             withContext(Dispatchers.Main){
-                isStarred.value = cryptoListRepository.isSingleCoinStarred(id)
+                isStarredFlow.emit(isStarred)
             }
         }
     }

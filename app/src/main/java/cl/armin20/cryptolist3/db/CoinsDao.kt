@@ -39,7 +39,7 @@ interface CoinsDao {
     @Query("SELECT * FROM starred_coin")
     suspend fun getAllStarredCoin(): List<StarredCoin>
 
-    @Query("SELECT CASE WHEN EXISTS( SELECT * FROM starred_coin WHERE id = :id) THEN 'TRUE' ELSE 'FALSE' END")
-    suspend fun isSingleCoinStarred(id: String): Boolean
+    @Query("SELECT CASE WHEN EXISTS( SELECT * FROM starred_coin WHERE id = :id) THEN 1 ELSE 0 END")
+    suspend fun isSingleCoinStarred(id: String): Int
 
 }

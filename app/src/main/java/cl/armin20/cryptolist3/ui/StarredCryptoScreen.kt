@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,6 +36,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.armin20.cryptolist3.CryptoList2Application
@@ -81,11 +84,9 @@ fun StarredCryptoScreen(onItemClick: (route: String) -> Unit) {
                     )
                     .clip(RoundedCornerShape(18.dp))
             ) {
-                Spacer(modifier = Modifier.height(20.dp))
-
-                LazyRow(modifier = Modifier.padding(horizontal = 26.dp)) {
-                    items(1) {
-                        CardHeroStarred(starredCryptoViewModel)
+                LazyColumn(modifier = Modifier.padding(horizontal = 26.dp)) {
+                    items(starredCryptoViewModel.starredCryptoList.value) {
+                        CardHeroStarred(it.id, starredCryptoViewModel)
                     }
                 }
 
@@ -99,9 +100,11 @@ fun StarredCryptoScreen(onItemClick: (route: String) -> Unit) {
 
 //@Preview(showSystemUi = true, device = Devices.NEXUS_6)
 @Composable
-fun CardHeroStarred(starredCryptoViewModel: StarredCryptoViewModel) {
+fun CardHeroStarred(item:String, starredCryptoViewModel: StarredCryptoViewModel) {
+
     Box(
         modifier = Modifier
+            .padding(vertical = 9.dp)
             .cardBgLinearGradient()
             .size(280.dp)
             .border(
@@ -113,24 +116,24 @@ fun CardHeroStarred(starredCryptoViewModel: StarredCryptoViewModel) {
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(25.dp)
         ) {
-           /* AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data("https://static.coincap.io/assets/icons/${cryptoDetailsViewModel.cryptoDetail.value.data.symbol.lowercase()}@2x.png")
-                    .crossfade(true)
-                    .build(),
-                contentDescription = "crypto icon",
-                modifier = Modifier
-                    .size(125.dp)
-                    .padding(top = 7.dp),
-//                            error = painterResource(R.drawable.ic_baseline_broken_image),
-                contentScale = ContentScale.Fit
-            )*/
+            /* AsyncImage(
+                 model = ImageRequest.Builder(LocalContext.current)
+                     .data("https://static.coincap.io/assets/icons/${cryptoDetailsViewModel.cryptoDetail.value.data.symbol.lowercase()}@2x.png")
+                     .crossfade(true)
+                     .build(),
+                 contentDescription = "crypto icon",
+                 modifier = Modifier
+                     .size(125.dp)
+                     .padding(top = 7.dp),
+ //                            error = painterResource(R.drawable.ic_baseline_broken_image),
+                 contentScale = ContentScale.Fit
+             )*/
 
             Spacer(modifier = Modifier.height(10.dp))
 
             Text(
-                text = "Bitcoin",
-//                text = cryptoDetailsViewModel.cryptoDetail.value.data.name,
+//                text = "Bitcoin",
+                text = item,
                 style = MaterialTheme.typography.displaySmall.copy(
                     shadow = Shadow(
                         color = MaterialTheme.colorScheme.onPrimary,
@@ -176,7 +179,7 @@ fun BottomStarredCryptoScreen(
         ) {
 
             Text(
-                text = " ⭐️",
+                text = "${starredCryptoViewModel.starredCryptoList.value.size} ⭐️",
                 style = MaterialTheme.typography.bodyLarge,
             )
 

@@ -15,7 +15,7 @@ interface CryptoListRepositoryInterface {
     suspend fun addStarredCoin(starredCoin: StarredCoin)
     suspend fun removeStarredCoin(starredCoin: StarredCoin)
     suspend fun getAllStarredCoins():List<StarredCoin>
-    suspend fun isSingleCoinStarred(id: String):Boolean
+    suspend fun isSingleCoinStarred(id: String):Int
 
 
 }
