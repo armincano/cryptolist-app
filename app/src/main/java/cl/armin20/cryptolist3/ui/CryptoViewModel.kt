@@ -46,10 +46,14 @@ class CryptoViewModel(private val stateHandle: SavedStateHandle) : ViewModel() {
         getCoins()
     }
 
-    fun getDateTime(s: Long): String {
+   /* fun onSearchTextFieldChange(newText: String) {
+        searchTextField.value = newText
+    }*/
+
+    fun parseTimestamp(timestamp: Long): String {
         return try {
-            val sdf = SimpleDateFormat("HH:mm:ss")//"dd MMMM yyyy, HH:mm:ss"
-            val date = Date(s)
+            val sdf = SimpleDateFormat("MMMM dd, HH:mm:ss")//"dd MMMM yyyy, HH:mm:ss"
+            val date = Date(timestamp)
             sdf.format(date)
         } catch (e: Exception) {
             e.toString()

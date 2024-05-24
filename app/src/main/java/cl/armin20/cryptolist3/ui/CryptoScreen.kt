@@ -90,8 +90,6 @@ fun CryptoScreen(onItemClick: (id: String) -> Unit) {
     }
 }
 
-
-// @Preview(showSystemUi = true, device = Devices.NEXUS_6)
 @Composable
 fun Header(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> Unit) {
 
@@ -163,7 +161,6 @@ fun Header(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> Unit) 
     }
 }
 
-// @Preview(showSystemUi = true, device = Devices.NEXUS_6)
 @Composable
 fun CryptoListItem(item: Data, onItemClick: (id: String) -> Unit) {
 
@@ -253,7 +250,9 @@ fun BottomCryptoScreen(cryptoViewModel: CryptoViewModel, onItemClick: (id: Strin
                 .size(50.dp)
                 .clip(RoundedCornerShape(50))
                 .background(MaterialTheme.colorScheme.onPrimaryContainer)
-                .clickable { },
+                .clickable {
+
+                },
         ) {
             Image(
                 painter = painterResource(id = R.drawable.star_profile),
