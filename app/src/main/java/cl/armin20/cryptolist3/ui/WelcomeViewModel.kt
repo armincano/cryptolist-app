@@ -26,9 +26,9 @@ class WelcomeViewModel : ViewModel() {
     fun saveFirstRunAndUserDBAndUserDataStore(context: Context, firstName:String, avatar:String="avatar_default", onItemClick: () -> Unit){
         viewModelScope.launch(Dispatchers.IO) {
             writeFirstRun(context)
-            writeUserName(firstName, context)
+            writeUserName(firstName.lowercase(), context)
             writeUserAvatar(avatar, context)
-            val user = User(null, firstName, avatar)
+            val user = User(null, firstName.lowercase(), avatar)
             cryptoListRepository.addUser(user)
             withContext(Dispatchers.Main) {
                 onItemClick()

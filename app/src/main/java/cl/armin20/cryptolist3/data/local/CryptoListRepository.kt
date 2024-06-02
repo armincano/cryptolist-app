@@ -1,6 +1,7 @@
 package cl.armin20.cryptolist3.data.local
 
 import android.app.Application
+import android.util.Log
 import android.widget.Toast
 import cl.armin20.cryptolist3.CryptoList2Application
 import cl.armin20.cryptolist3.NetworkPing
@@ -30,20 +31,41 @@ class CryptoListRepository(application: Application) : CryptoListRepositoryInter
         return coinsDao.getAllUsers()
     }
 
-    override suspend fun addStarredCoin(starredCoin: StarredCoin) {
-        coinsDao.addStarredCoin(starredCoin)
+    override suspend fun addStarredCoin(user: String, coinId: String) {
+        if (coinsDao.isUserExists(user) == 1) {
+            val starredCoin = coinsDao.getStarredCoin(user)
+            if (starredCoin == null) {
+                val firstStarredCoin = StarredCoin(user, mutableSetOf<String>())
+                coinsDao.addStarredCoin(firstStarredCoin)
+                firstStarredCoin.starredCoins.add(coinId)
+                coinsDao.addStarredCoin(firstStarredCoin)
+            } else {
+                starredCoin.starredCoins.add(coinId)
+                coinsDao.addStarredCoin(starredCoin)
+            }
+        }
     }
 
-    override suspend fun removeStarredCoin(starredCoin: StarredCoin) {
-        coinsDao.removeStarredCoin(starredCoin)
+    override suspend fun removeStarredCoin(user: String, coinId: String) {
+        if (coinsDao.isUserExists(user) == 1) {
+            val starredCoin = coinsDao.getStarredCoin(user)
+            starredCoin.starredCoins.remove(coinId)
+            coinsDao.removeStarredCoin(starredCoin)
+        }
     }
 
-    override suspend fun getAllStarredCoins(): List<StarredCoin> {
-        return coinsDao.getAllStarredCoin()
+    override suspend fun getStarredCoin(user: String): StarredCoin {
+        val starredCoin = coinsDao.getStarredCoin(user)
+        if (starredCoin == null) {
+            val firstStarredCoin = StarredCoin(user, mutableSetOf<String>())
+            coinsDao.addStarredCoin(firstStarredCoin)
+            return firstStarredCoin
+        }
+        return starredCoin
     }
 
-    override suspend fun isSingleCoinStarred(id: String): Int {
-        return coinsDao.isSingleCoinStarred(id)
+    override suspend fun isSingleCoinStarred(user: String, coinId: String): Int {
+        return coinsDao.isSingleCoinStarred(user, coinId)
     }
 
     override suspend fun getAllCoins(): Coins {

@@ -12,10 +12,8 @@ interface CryptoListRepositoryInterface {
     suspend fun addUser(user:User)
     suspend fun getAllUsers():List<User>
 
-    suspend fun addStarredCoin(starredCoin: StarredCoin)
-    suspend fun removeStarredCoin(starredCoin: StarredCoin)
-    suspend fun getAllStarredCoins():List<StarredCoin>
-    suspend fun isSingleCoinStarred(id: String):Int
-
-
+    suspend fun addStarredCoin(user: String, coinId: String)
+    suspend fun removeStarredCoin(user: String, coinId: String)
+    suspend fun getStarredCoin(user: String):StarredCoin
+    suspend fun isSingleCoinStarred(user: String, coinId: String):Int
 }

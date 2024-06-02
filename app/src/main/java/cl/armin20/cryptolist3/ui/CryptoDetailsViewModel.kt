@@ -13,6 +13,7 @@ import cl.armin20.cryptolist3.model.Data
 import cl.armin20.cryptolist3.data.local.CryptoListRepository
 import cl.armin20.cryptolist3.data.local.CryptoListRepositoryInterface
 import cl.armin20.cryptolist3.model.StarredCoin
+import cl.armin20.cryptolist3.ui.utils.DataStoreUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,8 +29,9 @@ class CryptoDetailsViewModel(stateHandle: SavedStateHandle) : ViewModel() {
         CryptoList2Application.getAppContext() as Application
     )
 
-    var id = stateHandle.get<String>("id") ?: ""
+    var id = stateHandle.get<String>("coinIdOrProfileScreen") ?: ""
     val isStarredFlow = MutableStateFlow(false)
+    var currentUserName = stateHandle.get<String>("user") ?: ""
 
     //value holder whose reads and writes are observed by Compose
     val cryptoDetail = mutableStateOf(
@@ -45,24 +47,31 @@ class CryptoDetailsViewModel(stateHandle: SavedStateHandle) : ViewModel() {
         getDetailCoin(id)
     }
 
-    fun addStarredCoin(id: String) {
+    fun addStarredCoin(coinId: String) {
+        val currentUserNameValue = currentUserName
         viewModelScope.launch(Dispatchers.IO) {
-            cryptoListRepository.addStarredCoin(StarredCoin(id))
+            cryptoListRepository.addStarredCoin(currentUserNameValue, coinId)
             isStarredFlow.emit(true)
         }
     }
 
-    fun removeStarredCoin(id: String) {
+    fun removeStarredCoin(coinId: String) {
+        val currentUserNameValue = currentUserName
         viewModelScope.launch(Dispatchers.IO) {
-            cryptoListRepository.removeStarredCoin(StarredCoin(id))
+            cryptoListRepository.removeStarredCoin(currentUserNameValue, coinId)
             isStarredFlow.emit(false)
         }
     }
 
-    fun isSingleCoinStarred(id: String) {
+    fun isSingleCoinStarred(coinId: String) {
+        val currentUserNameValue = currentUserName
         viewModelScope.launch(Dispatchers.IO) {
-            val isStarred = cryptoListRepository.isSingleCoinStarred(id) == 1
-            withContext(Dispatchers.Main){
+            Log.d(ContentValues.TAG, "isSingleCoinStarred: $coinId")
+            Log.d(ContentValues.TAG, "isSingleCoinStarred: current user $currentUserNameValue")
+            val isStarred =
+                cryptoListRepository.isSingleCoinStarred(currentUserNameValue, coinId) == 1
+            Log.d(ContentValues.TAG, "isSingleCoinStarred: $isStarred")
+            withContext(Dispatchers.Main) {
                 isStarredFlow.emit(isStarred)
             }
         }
@@ -92,4 +101,3 @@ class CryptoDetailsViewModel(stateHandle: SavedStateHandle) : ViewModel() {
     }
 
 }
-

@@ -30,16 +30,19 @@ interface CoinsDao {
     @Query("SELECT * FROM users")
     suspend fun getAllUsers(): List<User>
 
+    @Query("SELECT CASE WHEN EXISTS( SELECT * FROM users WHERE firstName = :user ) THEN 1 ELSE 0 END")
+    suspend fun isUserExists(user: String): Int
+
+    @Query("SELECT * FROM starred_coin where user = :user")
+    suspend fun getStarredCoin(user: String): StarredCoin
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addStarredCoin(starredCoin: StarredCoin)
 
-    @Delete
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun removeStarredCoin(starredCoin: StarredCoin)
 
-    @Query("SELECT * FROM starred_coin")
-    suspend fun getAllStarredCoin(): List<StarredCoin>
-
-    @Query("SELECT CASE WHEN EXISTS( SELECT * FROM starred_coin WHERE id = :id) THEN 1 ELSE 0 END")
-    suspend fun isSingleCoinStarred(id: String): Int
+    @Query("SELECT CASE WHEN EXISTS( SELECT * FROM starred_coin WHERE user = :user AND starredCoins LIKE '%' || :coinId || '%') THEN 1 ELSE 0 END")
+    suspend fun isSingleCoinStarred(user: String, coinId: String): Int
 
 }

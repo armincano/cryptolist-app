@@ -8,5 +8,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "starred_coin")
 data class StarredCoin(
     @PrimaryKey
-    val id: String,
+    val user: String,
+
+    val starredCoins: MutableSet<String>,
 )

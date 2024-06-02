@@ -1,5 +1,6 @@
 package cl.armin20.cryptolist3.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,6 +15,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,7 +33,7 @@ import cl.armin20.cryptolist3.ui.utils.surfaceBgRadialGradient
 
 @Composable
 //@Preview(showSystemUi = true, device = Devices.NEXUS_6)
-fun ProfileScreen(onItemClick: (route:String) -> Unit) {
+fun ProfileScreen(onItemClick: (route: String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -128,16 +131,26 @@ fun ProfileScreen(onItemClick: (route:String) -> Unit) {
                             )
                         )
                         .clickable(enabled = createAccountTextState.value.isNotEmpty()) {
-                            profileViewModel.saveUserDB(
-                                createAccountTextState.value,
-                                createAccountImg.value
-                            )
-                            profileViewModel.saveUserDataStore(
-                                createAccountTextState.value,
-                                createAccountImg.value,
-                                CryptoList2Application.getAppContext()
-                            )
-                            onItemClick("cryptocoins")
+                            if (!profileViewModel.checkUserExistsDB(createAccountTextState.value)) {
+                                profileViewModel.saveUserDB(
+                                    createAccountTextState.value,
+                                    createAccountImg.value,
+                                )
+                                profileViewModel.saveUserDataStore(
+                                    createAccountTextState.value,
+                                    createAccountImg.value,
+                                    CryptoList2Application.getAppContext()
+                                )
+                                onItemClick("splashScreen")
+                            } else {
+                                Toast
+                                    .makeText(
+                                        CryptoList2Application.getAppContext(),
+                                        "Use a name that doesn't exist",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                    .show()
+                            }
                         },
                 ) {
                     Image(
@@ -224,7 +237,7 @@ fun ProfileScreen(onItemClick: (route:String) -> Unit) {
                                 profileViewModel.selectedUserInChangeProfile.value.avatar,
                                 CryptoList2Application.getAppContext()
                             )
-                            onItemClick("cryptocoins")
+                            onItemClick("splashScreen")
                         },
                 ) {
                     Image(
@@ -248,7 +261,7 @@ fun ProfileScreen(onItemClick: (route:String) -> Unit) {
 @Composable
 fun BottomProfileScreen(
     profileViewModel: ProfileViewModel,
-    onItemClick: (route:String) -> Unit,
+    onItemClick: (route: String) -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -257,22 +270,38 @@ fun BottomProfileScreen(
             .fillMaxWidth()
     ) {
 
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 10.dp)
-                .weight(1f),
-        ) {
+        val currentUserName by profileViewModel.currentUserName.collectAsState()
 
-            Text(
-                text = "${profileViewModel.currentUserName.value} Profile",
-                style = MaterialTheme.typography.bodyLarge,
-            )
-
-            Text(
-                text = "You have ${profileViewModel.starredCryptoList.value.size} ⭐️ cryptos",
-                style = MaterialTheme.typography.labelSmall,
-            )
-
+        if(currentUserName != "guest") {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .weight(1f),
+            ) {
+                Text(
+                    text = "$currentUserName Profile",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                Text(
+                    text = "You have ${profileViewModel.starredCryptoList.value.starredCoins.size} ⭐️ cryptos",
+                    style = MaterialTheme.typography.labelSmall,
+                )
+            }
+        } else{
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .weight(1f),
+            ) {
+                Text(
+                    text = "Guest Profile",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                Text(
+                    text = "You have 0 ⭐️ cryptos",
+                    style = MaterialTheme.typography.labelSmall,
+                )
+            }
         }
 
         Row(horizontalArrangement = Arrangement.SpaceAround) {

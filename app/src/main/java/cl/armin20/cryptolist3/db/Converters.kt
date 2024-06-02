@@ -27,6 +27,24 @@ class Converters {
         return Gson().fromJson(data, listType)
     }
 
+    /////////////////////
+
+    @TypeConverter
+    fun fromString(value: String): MutableSet<String> {
+        if (value.isEmpty()) {
+            return mutableSetOf()
+        }
+        return value.split(",").toMutableSet()
+    }
+
+    @TypeConverter
+    fun fromSet(set: MutableSet<String>): String {
+        if (set.isEmpty()) {
+            return ""
+        }
+        return set.joinToString(",")
+    }
+
 }
 
 

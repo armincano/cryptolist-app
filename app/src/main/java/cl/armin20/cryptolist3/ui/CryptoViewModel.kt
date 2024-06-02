@@ -16,8 +16,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.content.ContentValues.TAG
 import android.util.Log
+import android.widget.Toast
 import cl.armin20.cryptolist3.model.StarredCoin
 import cl.armin20.cryptolist3.ui.utils.DataStoreUtils
+import kotlinx.coroutines.flow.MutableStateFlow
 
 //stateHandle guarda el estado, mantien la posición de scrolling y evita el system initiated process death.
 //The Navigation component, behind the scenes, saves the navigation arguments stored in NavStackEntry
@@ -31,10 +33,10 @@ class CryptoViewModel(private val stateHandle: SavedStateHandle) : ViewModel() {
     val cryptoList = mutableStateOf(Coins(1, emptyList(), 1))
     var searchTextField = mutableStateOf("")
 
-    var currentUserName = mutableStateOf("guest")
+    var currentUserName = MutableStateFlow("guest")
     var currentUserAvatar = mutableStateOf("avatar_default")
 
-    var starredCryptoList = mutableStateOf(listOf<StarredCoin>())
+    var starredCryptoList = mutableStateOf(StarredCoin("guest", mutableSetOf()))
 
     init {
         DataStoreUtils.getUserValuesDataStore(
@@ -43,12 +45,19 @@ class CryptoViewModel(private val stateHandle: SavedStateHandle) : ViewModel() {
             currentUserName,
             currentUserAvatar
         )
+        viewModelScope.launch {
+            currentUserName.collect { name ->
+                if (name != "guest") {
+                    getStarredCryptos()
+                }
+            }
+        }
         getCoins()
     }
 
-   /* fun onSearchTextFieldChange(newText: String) {
-        searchTextField.value = newText
-    }*/
+    /* fun onSearchTextFieldChange(newText: String) {
+         searchTextField.value = newText
+     }*/
 
     fun parseTimestamp(timestamp: Long): String {
         return try {
@@ -60,9 +69,10 @@ class CryptoViewModel(private val stateHandle: SavedStateHandle) : ViewModel() {
         }
     }
 
-    fun getAllStarredCryptos() {
+    fun getStarredCryptos() {
+        val currentUserNameValue = currentUserName.value
         viewModelScope.launch(Dispatchers.IO) {
-            val allStarredCoins = cryptoListRepository.getAllStarredCoins()
+            val allStarredCoins = cryptoListRepository.getStarredCoin(currentUserNameValue)
             withContext(Dispatchers.Main) {
                 starredCryptoList.value = allStarredCoins
             }

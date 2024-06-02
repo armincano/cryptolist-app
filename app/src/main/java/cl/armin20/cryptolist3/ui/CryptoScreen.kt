@@ -1,6 +1,6 @@
 package cl.armin20.cryptolist3.ui
 
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -14,6 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -35,22 +37,19 @@ import cl.armin20.cryptolist3.ui.theme.cardBgGradientExt
 import cl.armin20.cryptolist3.ui.utils.surfaceBgRadialGradient
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 // @Preview(showSystemUi = true, device = Devices.NEXUS_6)
 // To achieve a sticky header with LazyColumn, you can use the experimental StickyHeader component.
 // Must use the ExperimentalFoundationApi annotation to use the StickyHeader component.
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CryptoScreen(onItemClick: (id: String) -> Unit) {
+fun CryptoScreen(onItemClick: (id: String, user: String) -> Unit) {
     //Instanciar el ViewModel de forma correcta, sin entregar parámetros
     val cryptoViewModel: CryptoViewModel = viewModel()
     val navController = rememberNavController()
 
     LaunchedEffect(navController) {
-        cryptoViewModel.getAllStarredCryptos()
+        cryptoViewModel.getStarredCryptos()
     }
 
     Column(
@@ -60,7 +59,9 @@ fun CryptoScreen(onItemClick: (id: String) -> Unit) {
             .padding(20.dp)
     ) {
 
-        Header(cryptoViewModel, onItemClick = { id -> onItemClick(id) })
+        Header(
+            cryptoViewModel,
+            onItemClick = { id -> onItemClick(id, cryptoViewModel.currentUserName.value) })
         Spacer(modifier = Modifier.height(10.dp))
         Column(
             modifier = Modifier
@@ -81,12 +82,21 @@ fun CryptoScreen(onItemClick: (id: String) -> Unit) {
                         it.id.contains(cryptoViewModel.searchTextField.value)
                     }
                 ) {
-                    CryptoListItem(it, onItemClick = { id -> onItemClick(id) })
+                    CryptoListItem(
+                        it,
+                        onItemClick = { id ->
+                            onItemClick(
+                                id,
+                                cryptoViewModel.currentUserName.value
+                            )
+                        })
                 }
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
-        BottomCryptoScreen(cryptoViewModel, onItemClick = { id -> onItemClick(id) })
+        BottomCryptoScreen(
+            cryptoViewModel,
+            onItemClick = { id -> onItemClick(id, cryptoViewModel.currentUserName.value) })
     }
 }
 
@@ -100,17 +110,35 @@ fun Header(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> Unit) 
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Hey, ${cryptoViewModel.currentUserName.value}!",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(horizontal = 10.dp)
-                )
-                Text(
-                    text = "You have ${cryptoViewModel.starredCryptoList.value.size} ⭐️ cryptos",
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(horizontal = 10.dp)
-                )
+            // TODO add a flow to recompose the whole Row composable each time users value change
+
+            val user by cryptoViewModel.starredCryptoList
+            if(user.user != "guest"){
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Hey, ${user.user}!",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(horizontal = 10.dp)
+                    )
+                    Text(
+                        text = "You have ${user.starredCoins?.size} ⭐️ cryptos",
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 10.dp)
+                    )
+                }
+            } else {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Hey, Guest!",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(horizontal = 10.dp)
+                    )
+                    Text(
+                        text = "You have 0 ⭐️ cryptos",
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(horizontal = 10.dp)
+                    )
+                }
             }
 
             val context = LocalContext.current
@@ -251,7 +279,13 @@ fun BottomCryptoScreen(cryptoViewModel: CryptoViewModel, onItemClick: (id: Strin
                 .clip(RoundedCornerShape(50))
                 .background(MaterialTheme.colorScheme.onPrimaryContainer)
                 .clickable {
-
+                    Toast
+                        .makeText(
+                            CryptoList2Application.getAppContext(),
+                            "${cryptoViewModel.starredCryptoList.value.starredCoins} starred cryptos",
+                            Toast.LENGTH_SHORT
+                        )
+                        .show()
                 },
         ) {
             Image(
