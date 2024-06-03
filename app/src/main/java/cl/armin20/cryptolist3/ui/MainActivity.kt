@@ -58,8 +58,8 @@ private fun CryptoListApp() {
     NavHost(navController, startDestination = startDestination) {
 
         composable(route = "splashScreen") {
-            SplashScreen { string ->
-                navController.navigate(string)
+            SplashScreen { route ->
+                navController.navigate(route)
             }
         }
 
