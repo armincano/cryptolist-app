@@ -22,7 +22,7 @@ import cl.armin20.cryptolist3.model.User
 @TypeConverters(Converters::class)
 abstract class CoinsDb : RoomDatabase() {
     init {
-        Log.i(ContentValues.TAG, "CoinsDb()")
+//        Log.i(ContentValues.TAG, "CoinsDb()")
     }
     abstract val dao: CoinsDao
 

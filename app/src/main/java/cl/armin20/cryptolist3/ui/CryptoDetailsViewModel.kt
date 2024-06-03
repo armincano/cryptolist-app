@@ -66,11 +66,8 @@ class CryptoDetailsViewModel(stateHandle: SavedStateHandle) : ViewModel() {
     fun isSingleCoinStarred(coinId: String) {
         val currentUserNameValue = currentUserName
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d(ContentValues.TAG, "isSingleCoinStarred: $coinId")
-            Log.d(ContentValues.TAG, "isSingleCoinStarred: current user $currentUserNameValue")
             val isStarred =
                 cryptoListRepository.isSingleCoinStarred(currentUserNameValue, coinId) == 1
-            Log.d(ContentValues.TAG, "isSingleCoinStarred: $isStarred")
             withContext(Dispatchers.Main) {
                 isStarredFlow.emit(isStarred)
             }
