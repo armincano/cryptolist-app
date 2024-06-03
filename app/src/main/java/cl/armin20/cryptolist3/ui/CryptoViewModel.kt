@@ -17,6 +17,7 @@ import java.util.*
 import android.content.ContentValues.TAG
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.armin20.cryptolist3.model.StarredCoin
 import cl.armin20.cryptolist3.ui.utils.DataStoreUtils
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,6 +38,7 @@ class CryptoViewModel(private val stateHandle: SavedStateHandle) : ViewModel() {
     var currentUserAvatar = mutableStateOf("avatar_default")
 
     var starredCryptoList = mutableStateOf(StarredCoin("guest", mutableSetOf()))
+    var isStarredCryptosBtnPressed = mutableStateOf(false)
 
     init {
         DataStoreUtils.getUserValuesDataStore(
@@ -55,9 +57,17 @@ class CryptoViewModel(private val stateHandle: SavedStateHandle) : ViewModel() {
         getCoins()
     }
 
-    /* fun onSearchTextFieldChange(newText: String) {
-         searchTextField.value = newText
-     }*/
+    fun onStarredCryptosBtnIsPressed() {
+        viewModelScope.launch(Dispatchers.Main){
+            searchTextField.value = ""
+            isStarredCryptosBtnPressed.value =true
+            searchTextField.value = starredCryptoList.value.starredCoins.joinToString(" ")
+        }
+    }
+
+    fun onResetCryptosBtnIsPressed() {
+        searchTextField.value = ""
+    }
 
     fun parseTimestamp(timestamp: Long): String {
         return try {

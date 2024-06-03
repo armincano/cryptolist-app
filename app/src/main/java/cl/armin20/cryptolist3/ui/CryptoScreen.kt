@@ -52,6 +52,8 @@ fun CryptoScreen(onItemClick: (id: String, user: String) -> Unit) {
         cryptoViewModel.getStarredCryptos()
     }
 
+    val isStarredCryptosBtnPressed by cryptoViewModel.isStarredCryptosBtnPressed
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -78,8 +80,13 @@ fun CryptoScreen(onItemClick: (id: String, user: String) -> Unit) {
                 items(
                     if (cryptoViewModel.searchTextField.value.isEmpty()) {
                         cryptoViewModel.cryptoList.value.data
-                    } else cryptoViewModel.cryptoList.value.data.filter {
-                        it.id.contains(cryptoViewModel.searchTextField.value)
+                    } else if (isStarredCryptosBtnPressed) {
+                        cryptoViewModel.cryptoList.value.data.filter { cryptocoin ->
+                            cryptoViewModel.searchTextField.value.split(" ")
+                                .any { it == cryptocoin.id }
+                        }
+                    } else cryptoViewModel.cryptoList.value.data.filter { cryptocoin ->
+                        cryptoViewModel.searchTextField.value.split(" ").any { it in cryptocoin.id }
                     }
                 ) {
                     CryptoListItem(
@@ -91,6 +98,7 @@ fun CryptoScreen(onItemClick: (id: String, user: String) -> Unit) {
                             )
                         })
                 }
+                cryptoViewModel.isStarredCryptosBtnPressed.value = false
             }
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -113,7 +121,7 @@ fun Header(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> Unit) 
             // TODO add a flow to recompose the whole Row composable each time users value change
 
             val user by cryptoViewModel.starredCryptoList
-            if(user.user != "guest"){
+            if (user.user != "guest") {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = "Hey, ${user.user}!",
@@ -176,7 +184,7 @@ fun Header(cryptoViewModel: CryptoViewModel, onItemClick: (id: String) -> Unit) 
                     textState.value = newValue
                 },
                 singleLine = true,
-                label = { Text("Search a crypto") },
+                label = { Text("Search a crypto by name") },
                 textStyle = MaterialTheme.typography.bodyLarge,
                 shape = MaterialTheme.shapes.large,
                 modifier = Modifier
@@ -272,29 +280,48 @@ fun BottomCryptoScreen(cryptoViewModel: CryptoViewModel, onItemClick: (id: Strin
             modifier = Modifier.padding(horizontal = 10.dp)
         )
 
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(50.dp)
-                .clip(RoundedCornerShape(50))
-                .background(MaterialTheme.colorScheme.onPrimaryContainer)
-                .clickable {
-                    Toast
-                        .makeText(
-                            CryptoList2Application.getAppContext(),
-                            "${cryptoViewModel.starredCryptoList.value.starredCoins} starred cryptos",
-                            Toast.LENGTH_SHORT
-                        )
-                        .show()
-                },
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.star_profile),
-                contentDescription = "Starred cryptos",
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
+        Row {
+
+            Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(30.dp)
-            )
+                    .size(50.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(MaterialTheme.colorScheme.onPrimaryContainer)
+                    .clickable {
+                        cryptoViewModel.onResetCryptosBtnIsPressed()
+                    },
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.update),
+                    contentDescription = "Reset cryptos",
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
+                    modifier = Modifier
+                        .size(30.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(15.dp))
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(MaterialTheme.colorScheme.onPrimaryContainer)
+                    .clickable {
+                        cryptoViewModel.onStarredCryptosBtnIsPressed()
+                    },
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.star_profile),
+                    contentDescription = "Starred cryptos",
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surface),
+                    modifier = Modifier
+                        .size(30.dp)
+                )
+            }
+
         }
 
     }
